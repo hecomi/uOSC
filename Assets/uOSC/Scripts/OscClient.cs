@@ -35,14 +35,76 @@ public class OscClient : MonoBehaviour
         udpClient_.Close();
     }
 
-    void FillZeros(MemoryStream stream, ref int pos)
+    void FillZeros(MemoryStream stream, int preBufferSize, bool isString)
     {
-        var posB = OscUtil.ConvertOffsetToMultipleOfFour(pos);
-        var dPos = posB - pos;
-        if (dPos > 0)
+        var bufferSize = OscUtil.ConvertOffsetToMultipleOfFour(preBufferSize);
+
+        var size = bufferSize - preBufferSize;
+        if (isString && size == 0)
         {
-            stream.Write(zeros, 0, dPos);
-            pos = posB;
+            size = 4;
+        }
+
+        if (size > 0)
+        {
+            stream.Write(zeros, 0, size);
+        }
+    }
+
+    void WriteAddress(MemoryStream stream, string address)
+    {
+        var byteAddress = Encoding.UTF8.GetBytes(address);
+        stream.Write(byteAddress, 0, byteAddress.Length);
+        FillZeros(stream, byteAddress.Length, true);
+    }
+
+    void WriteTypes(MemoryStream stream, object[] values)
+    {
+        string types = ",";
+        for (int i = 0; i < values.Length; ++i)
+        {
+            var type = values[i].GetType();
+            if      (type == typeof(int))    types += "i";
+            else if (type == typeof(float))  types += "f";
+            else if (type == typeof(string)) types += "s";
+            else if (type == typeof(byte[])) types += "b";
+        }
+
+        var byteTypes = Encoding.UTF8.GetBytes(types);
+        stream.Write(byteTypes, 0, byteTypes.Length);
+        FillZeros(stream, byteTypes.Length, true);
+    }
+
+    void WriteValues(MemoryStream stream, object[] values)
+    {
+        for (int i = 0; i < values.Length; ++i)
+        {
+            var value = values[i];
+            var type = values[i].GetType();
+            if (type == typeof(int))
+            {
+                var byteValue = BitConverter.GetBytes(value.AsInt());
+                Array.Reverse(byteValue);
+                stream.Write(byteValue, 0, byteValue.Length);
+            }
+            else if (type == typeof(float))
+            {
+                var byteValue = BitConverter.GetBytes(value.AsFloat());
+                Array.Reverse(byteValue);
+                stream.Write(byteValue, 0, byteValue.Length);
+            }
+            else if (type == typeof(string))
+            {
+                var byteValue = Encoding.UTF8.GetBytes(value.AsString());
+                stream.Write(byteValue, 0, byteValue.Length);
+                FillZeros(stream, byteValue.Length, true);
+            }
+            else if (type == typeof(byte[]))
+            {
+                var byteValue = value.AsBlob();
+                stream.Write(byteValue, 0, byteValue.Length);
+                FillZeros(stream, byteValue.Length, false);
+            }
         }
     }
 
@@ -50,61 +112,9 @@ public class OscClient : MonoBehaviour
     {
         using (var stream = new MemoryStream(BufferSize))
         {
-            int pos = 0;
-
-            var byteAddress = Encoding.UTF8.GetBytes(address + "\0");
-            stream.Write(byteAddress, 0, byteAddress.Length);
-            pos += byteAddress.Length;
-            FillZeros(stream, ref pos);
-
-            string types = ",";
-            for (int i = 0; i < values.Length; ++i)
-            {
-                var type = values[i].GetType();
-                if      (type == typeof(int))    types += "i";
-                else if (type == typeof(float))  types += "f";
-                else if (type == typeof(string)) types += "s";
-                else if (type == typeof(byte[])) types += "b";
-            }
-
-            var byteTypes = Encoding.UTF8.GetBytes(types);
-            stream.Write(byteTypes, 0, byteTypes.Length);
-            pos += byteTypes.Length;
-            FillZeros(stream, ref pos);
-
-            for (int i = 0; i < values.Length; ++i)
-            {
-                var value = values[i];
-                var type = values[i].GetType();
-                if (type == typeof(int))
-                {
-                    var byteValue = BitConverter.GetBytes(value.AsInt());
-                    Array.Reverse(byteValue);
-                    stream.Write(byteValue, 0, byteValue.Length);
-                    pos += 4;
-                }
-                else if (type == typeof(float))
-                {
-                    var byteValue = BitConverter.GetBytes(value.AsFloat());
-                    Array.Reverse(byteValue);
-                    stream.Write(byteValue, 0, byteValue.Length);
-                    pos += 4;
-                }
-                else if (type == typeof(string))
-                {
-                    var byteValue = Encoding.UTF8.GetBytes(value.AsString());
-                    stream.Write(byteValue, 0, byteValue.Length);
-                    pos += OscUtil.ConvertOffsetToMultipleOfFour(byteValue.Length);
-                    FillZeros(stream, ref pos);
-                }
-                else if (type == typeof(byte[]))
-                {
-                    var byteValue = value.AsBlob();
-                    stream.Write(byteValue, 0, byteValue.Length);
-                    pos += OscUtil.ConvertOffsetToMultipleOfFour(byteValue.Length);
-                    FillZeros(stream, ref pos);
-                }
-            }
+            WriteAddress(stream, address);
+            WriteTypes(stream, values);
+            WriteValues(stream, values);
 
             var buffer = stream.GetBuffer();
             udpClient_.Send(buffer, buffer.Length, endPoint_);
