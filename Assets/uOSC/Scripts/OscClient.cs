@@ -35,6 +35,17 @@ public class OscClient : MonoBehaviour
         udpClient_.Close();
     }
 
+    public void Send(string address, params object[] values)
+    {
+        using (var stream = new MemoryStream(BufferSize))
+        {
+            WriteAddress(stream, address);
+            WriteTypes(stream, values);
+            WriteValues(stream, values);
+            Send(stream);
+        }
+    }
+
     void FillZeros(MemoryStream stream, int preBufferSize, bool isString)
     {
         var bufferSize = OscUtil.ConvertOffsetToMultipleOfFour(preBufferSize);
@@ -108,17 +119,10 @@ public class OscClient : MonoBehaviour
         }
     }
 
-    public void Send(string address, params object[] values)
+    void Send(MemoryStream stream)
     {
-        using (var stream = new MemoryStream(BufferSize))
-        {
-            WriteAddress(stream, address);
-            WriteTypes(stream, values);
-            WriteValues(stream, values);
-
-            var buffer = stream.GetBuffer();
-            udpClient_.Send(buffer, buffer.Length, endPoint_);
-        }
+        var buffer = stream.GetBuffer();
+        udpClient_.Send(buffer, buffer.Length, endPoint_);
     }
 }
 
