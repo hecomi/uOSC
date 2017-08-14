@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace uOSC
 {
@@ -11,8 +12,6 @@ namespace uOSC
 public class OscClient : MonoBehaviour
 {
     private const int BufferSize = 8192;
-    public static readonly byte zero = System.Convert.ToByte('\0');
-    public static readonly byte[] zeros = { zero, zero, zero, zero };
 
     [SerializeField]
     string address = "127.0.0.1";
@@ -22,28 +21,48 @@ public class OscClient : MonoBehaviour
 
     UdpClient udpClient_;
     IPEndPoint endPoint_;
+    OscThread thread_ = new OscThread();
+    Queue<OscMessage> messages_ = new Queue<OscMessage>();
 
     void OnEnable()
     {
         var ip = IPAddress.Parse(address);
         endPoint_ = new IPEndPoint(ip, port);
         udpClient_ = new UdpClient();
+        thread_.Start(UpdateSend);
     }
 
     void OnDisable()
     {
+        thread_.Stop();
         udpClient_.Close();
+    }
+
+    void UpdateSend()
+    {
+        while (messages_.Count > 0)
+        {
+            var message = messages_.Dequeue();
+            var address = message.address;
+            var values = message.values;
+
+            using (var stream = new MemoryStream(BufferSize))
+            {
+                WriteAddress(stream, address);
+                WriteTypes(stream, values);
+                WriteValues(stream, values);
+                Send(stream);
+            }
+        }
     }
 
     public void Send(string address, params object[] values)
     {
-        using (var stream = new MemoryStream(BufferSize))
+        messages_.Enqueue(new OscMessage() 
         {
-            WriteAddress(stream, address);
-            WriteTypes(stream, values);
-            WriteValues(stream, values);
-            Send(stream);
-        }
+            address = address,
+            values = values
+        });
     }
 
     void FillZeros(MemoryStream stream, int preBufferSize, bool isString)
@@ -58,7 +77,7 @@ public class OscClient : MonoBehaviour
 
         if (size > 0)
         {
-            stream.Write(zeros, 0, size);
+            stream.Write(OscUtil.zeros, 0, size);
         }
     }
 
