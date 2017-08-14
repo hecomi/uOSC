@@ -23,6 +23,7 @@ public class OscClient : MonoBehaviour
     IPEndPoint endPoint_;
     OscThread thread_ = new OscThread();
     Queue<OscMessage> messages_ = new Queue<OscMessage>();
+    object lockObject_ = new object();
 
     void OnEnable()
     {
@@ -42,7 +43,11 @@ public class OscClient : MonoBehaviour
     {
         while (messages_.Count > 0)
         {
-            var message = messages_.Dequeue();
+            OscMessage message;
+            lock (lockObject_)
+            {
+                message = messages_.Dequeue();
+            }
             var address = message.address;
             var values = message.values;
 
@@ -58,11 +63,15 @@ public class OscClient : MonoBehaviour
 
     public void Send(string address, params object[] values)
     {
-        messages_.Enqueue(new OscMessage() 
+        var message = new OscMessage() 
         {
             address = address,
             values = values
-        });
+        };
+        lock (lockObject_)
+        {
+            messages_.Enqueue(message);
+        }
     }
 
     void FillZeros(MemoryStream stream, int preBufferSize, bool isString)
