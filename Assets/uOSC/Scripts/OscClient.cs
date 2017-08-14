@@ -120,31 +120,42 @@ public class OscClient : MonoBehaviour
         {
             var value = values[i];
             var type = values[i].GetType();
-            if (type == typeof(int))
-            {
-                var byteValue = BitConverter.GetBytes(value.AsInt());
-                Array.Reverse(byteValue);
-                stream.Write(byteValue, 0, byteValue.Length);
-            }
-            else if (type == typeof(float))
-            {
-                var byteValue = BitConverter.GetBytes(value.AsFloat());
-                Array.Reverse(byteValue);
-                stream.Write(byteValue, 0, byteValue.Length);
-            }
-            else if (type == typeof(string))
-            {
-                var byteValue = Encoding.UTF8.GetBytes(value.AsString());
-                stream.Write(byteValue, 0, byteValue.Length);
-                FillZeros(stream, byteValue.Length, true);
-            }
-            else if (type == typeof(byte[]))
-            {
-                var byteValue = value.AsBlob();
-                stream.Write(byteValue, 0, byteValue.Length);
-                FillZeros(stream, byteValue.Length, false);
-            }
+
+            if      (type == typeof(int))    Write(stream, value.AsInt());
+            else if (type == typeof(float))  Write(stream, value.AsFloat());
+            else if (type == typeof(string)) Write(stream, value.AsString());
+            else if (type == typeof(byte[])) Write(stream, value.AsBlob());
         }
+    }
+
+    void Write(MemoryStream stream, int value)
+    {
+        var byteValue = BitConverter.GetBytes(value);
+        Array.Reverse(byteValue);
+        stream.Write(byteValue, 0, byteValue.Length);
+    }
+
+    void Write(MemoryStream stream, float value)
+    {
+        var byteValue = BitConverter.GetBytes(value);
+        Array.Reverse(byteValue);
+        stream.Write(byteValue, 0, byteValue.Length);
+    }
+
+    void Write(MemoryStream stream, string value)
+    {
+        var byteValue = Encoding.UTF8.GetBytes(value);
+        stream.Write(byteValue, 0, byteValue.Length);
+        FillZeros(stream, byteValue.Length, true);
+    }
+
+    void Write(MemoryStream stream, byte[] value)
+    {
+        var byteValue = value.AsBlob();
+        var size = byteValue.Length;
+        Write(stream, size);
+        stream.Write(byteValue, 0, byteValue.Length);
+        FillZeros(stream, byteValue.Length, false);
     }
 
     void Send(MemoryStream stream)
