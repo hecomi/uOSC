@@ -6,6 +6,9 @@ namespace uOSC
 
 public static class OscUtil
 {
+    public static readonly byte zero = Convert.ToByte('\0');
+    public static readonly byte[] zeros = { zero, zero, zero, zero };
+
     public static int ConvertOffsetToMultipleOfFour(int pos)
     {
         return (pos + 4) & ~0x3;

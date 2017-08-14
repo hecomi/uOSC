@@ -16,6 +16,7 @@ public class OscServer : MonoBehaviour
     UdpClient udpClient_;
     IPEndPoint endPoint_;
     OscParser parser_ = new OscParser();
+    OscThread thread_ = new OscThread();
 
     public class DataReceiveEvent : UnityEvent<OscMessage> {};
     public DataReceiveEvent onDataReceived { get; private set; }
@@ -29,24 +30,30 @@ public class OscServer : MonoBehaviour
     {
         endPoint_ = new IPEndPoint(IPAddress.Any, port);
         udpClient_ = new UdpClient(endPoint_);
+        thread_.Start(UpdateMessage);
     }
 
     void OnDisable()
     {
+        thread_.Stop();
         udpClient_.Close();
     }
 
     void Update()
     {
+        while (parser_.messageCount > 0)
+        {
+            var message = parser_.Dequeue();
+            onDataReceived.Invoke(message);
+        }
+    }
+
+    void UpdateMessage()
+    {
         while (udpClient_.Available > 0) 
         {
             var buffer = udpClient_.Receive(ref endPoint_);
             parser_.Parse(buffer);
-            while (parser_.messageCount > 0)
-            {
-                var message = parser_.Dequeue();
-                onDataReceived.Invoke(message);
-            }
         }
     }
 }
