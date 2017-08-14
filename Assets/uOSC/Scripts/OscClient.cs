@@ -141,7 +141,7 @@ public class OscClient : MonoBehaviour
     void Send(MemoryStream stream)
     {
         var buffer = stream.GetBuffer();
-        udpClient_.Send(buffer, buffer.Length, endPoint_);
+        udpClient_.Send(buffer, (int)stream.Position, endPoint_);
     }
 }
 
