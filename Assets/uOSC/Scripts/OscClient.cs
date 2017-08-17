@@ -19,24 +19,21 @@ public class OscClient : MonoBehaviour
     [SerializeField]
     int port = 3333;
 
-    UdpClient udpClient_;
-    IPEndPoint endPoint_;
+    OscUdp udp_ = new OscUdp();
     OscThread thread_ = new OscThread();
     Queue<OscMessage> messages_ = new Queue<OscMessage>();
     object lockObject_ = new object();
 
     void OnEnable()
     {
-        var ip = IPAddress.Parse(address);
-        endPoint_ = new IPEndPoint(ip, port);
-        udpClient_ = new UdpClient();
+        udp_.StartClient(address, port);
         thread_.Start(UpdateSend);
     }
 
     void OnDisable()
     {
         thread_.Stop();
-        udpClient_.Close();
+        udp_.Stop();
     }
 
     void UpdateSend()
@@ -159,7 +156,7 @@ public class OscClient : MonoBehaviour
     void Send(MemoryStream stream)
     {
         var buffer = stream.GetBuffer();
-        udpClient_.Send(buffer, (int)stream.Position, endPoint_);
+        udp_.Send(buffer, (int)stream.Position);
     }
 }
 
