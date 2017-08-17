@@ -102,11 +102,11 @@ public class OscClient : MonoBehaviour
         string types = ",";
         for (int i = 0; i < values.Length; ++i)
         {
-            var type = values[i].GetType();
-            if      (type == typeof(int))    types += "i";
-            else if (type == typeof(float))  types += "f";
-            else if (type == typeof(string)) types += "s";
-            else if (type == typeof(byte[])) types += "b";
+            var value = values[i];
+            if      (value is int)    types += "i";
+            else if (value is float)  types += "f";
+            else if (value is string) types += "s";
+            else if (value is byte[]) types += "b";
         }
 
         var byteTypes = Encoding.UTF8.GetBytes(types);
@@ -119,12 +119,10 @@ public class OscClient : MonoBehaviour
         for (int i = 0; i < values.Length; ++i)
         {
             var value = values[i];
-            var type = values[i].GetType();
-
-            if      (type == typeof(int))    Write(stream, value.AsInt());
-            else if (type == typeof(float))  Write(stream, value.AsFloat());
-            else if (type == typeof(string)) Write(stream, value.AsString());
-            else if (type == typeof(byte[])) Write(stream, value.AsBlob());
+            if      (value is int)    Write(stream, value.AsInt());
+            else if (value is float)  Write(stream, value.AsFloat());
+            else if (value is string) Write(stream, value.AsString());
+            else if (value is byte[]) Write(stream, value.AsBlob());
         }
     }
 
