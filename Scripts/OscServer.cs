@@ -52,8 +52,6 @@ public class OscServer : MonoBehaviour
 
     void UpdateMessage()
     {
-        udp_.UpdateServer();
-
         while (udp_.messageCount > 0) 
         {
             var buffer = udp_.Receive();
