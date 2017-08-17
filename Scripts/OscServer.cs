@@ -13,8 +13,7 @@ public class OscServer : MonoBehaviour
     [SerializeField]
     int port = 3333;
 
-    UdpClient udpClient_;
-    IPEndPoint endPoint_;
+    OscUdp udp_ = new OscUdp();
     OscParser parser_ = new OscParser();
     OscThread thread_ = new OscThread();
 
@@ -28,15 +27,14 @@ public class OscServer : MonoBehaviour
 
     void OnEnable()
     {
-        endPoint_ = new IPEndPoint(IPAddress.Any, port);
-        udpClient_ = new UdpClient(endPoint_);
+        udp_.StartServer(port);
         thread_.Start(UpdateMessage);
     }
 
     void OnDisable()
     {
         thread_.Stop();
-        udpClient_.Close();
+        udp_.Stop();
     }
 
     void Update()
@@ -50,9 +48,11 @@ public class OscServer : MonoBehaviour
 
     void UpdateMessage()
     {
-        while (udpClient_.Available > 0) 
+        udp_.UpdateServer();
+
+        while (udp_.messageCount > 0) 
         {
-            var buffer = udpClient_.Receive(ref endPoint_);
+            var buffer = udp_.Receive();
             parser_.Parse(buffer);
         }
     }
