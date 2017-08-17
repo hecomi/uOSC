@@ -19,7 +19,11 @@ public class OscClient : MonoBehaviour
     [SerializeField]
     int port = 3333;
 
-    OscUdp udp_ = new OscUdp();
+#if UNITY_UWP
+    // TODO: implement
+#else
+    OscUdp udp_ = new OscUdpDotNet();
+#endif
     OscThread thread_ = new OscThread();
     Queue<OscMessage> messages_ = new Queue<OscMessage>();
     object lockObject_ = new object();
