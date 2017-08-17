@@ -13,7 +13,11 @@ public class OscServer : MonoBehaviour
     [SerializeField]
     int port = 3333;
 
-    OscUdp udp_ = new OscUdp();
+#if UNITY_UWP
+    // TODO: implement
+#else
+    OscUdp udp_ = new OscUdpDotNet();
+#endif
     OscParser parser_ = new OscParser();
     OscThread thread_ = new OscThread();
 
