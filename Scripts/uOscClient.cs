@@ -19,8 +19,8 @@ public class uOscClient : MonoBehaviour
     [SerializeField]
     int port = 3333;
 
-#if UNITY_UWP
-    // TODO: implement
+#if NETFX_CORE
+    Udp udp_ = new UdpUwp();
 #else
     Udp udp_ = new UdpDotNet();
 #endif

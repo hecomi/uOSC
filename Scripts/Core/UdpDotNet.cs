@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if !NETFX_CORE
+
+using UnityEngine;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -68,3 +70,5 @@ public class UdpDotNet : Udp
 }
 
 }
+
+#endif
