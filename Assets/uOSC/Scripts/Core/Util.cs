@@ -6,13 +6,18 @@ namespace uOSC
 
 public static class Identifier
 {
-    public const string bundle = "#bundle";
+    public const string Bundle = "#bundle";
+
+    public const char Int    = 'i';
+    public const char Float  = 'f';
+    public const char String = 's';
+    public const char Blob   = 'b';
 }
 
 public static class Util
 {
-    public static readonly byte zero = Convert.ToByte('\0');
-    public static readonly byte[] zeros = { zero, zero, zero, zero };
+    private static readonly byte Zero = Convert.ToByte('\0');
+    public static readonly byte[] Zeros = { Zero, Zero, Zero, Zero };
 
     public static bool IsMultipleOfFour(int num)
     {
