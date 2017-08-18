@@ -3,7 +3,7 @@
 namespace uOSC
 {
 
-[RequireComponent(typeof(OscServer)),
+[RequireComponent(typeof(uOscServer)),
  RequireComponent(typeof(Renderer))]
 public class OscServerBlobTest : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class OscServerBlobTest : MonoBehaviour
 
     void Start()
     {
-        var server = GetComponent<OscServer>();
+        var server = GetComponent<uOscServer>();
         server.onDataReceived.AddListener(OnDataReceived);
 
         texture_ = new Texture2D(256, 256, TextureFormat.ARGB32, true);
@@ -20,7 +20,7 @@ public class OscServerBlobTest : MonoBehaviour
         renderer.material.mainTexture = texture_;
     }
 
-    void OnDataReceived(OscMessage message)
+    void OnDataReceived(Message message)
     {
         if (message.address == "/uOSC/blob")
         {

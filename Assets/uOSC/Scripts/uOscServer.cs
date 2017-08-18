@@ -8,7 +8,7 @@ using System.Net.Sockets;
 namespace uOSC
 {
 
-public class OscServer : MonoBehaviour
+public class uOscServer : MonoBehaviour
 {
     [SerializeField]
     int port = 3333;
@@ -16,12 +16,12 @@ public class OscServer : MonoBehaviour
 #if UNITY_UWP
     // TODO: implement
 #else
-    OscUdp udp_ = new OscUdpDotNet();
+    Udp udp_ = new UdpDotNet();
 #endif
-    OscParser parser_ = new OscParser();
-    OscThread thread_ = new OscThread();
+    Parser parser_ = new Parser();
+    Thread thread_ = new Thread();
 
-    public class DataReceiveEvent : UnityEvent<OscMessage> {};
+    public class DataReceiveEvent : UnityEvent<Message> {};
     public DataReceiveEvent onDataReceived { get; private set; }
 
     void Awake()

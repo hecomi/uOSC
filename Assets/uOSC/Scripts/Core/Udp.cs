@@ -6,7 +6,7 @@ using System.Net.Sockets;
 namespace uOSC
 {
 
-public abstract class OscUdp
+public abstract class Udp
 {
     public abstract int messageCount { get; }
     public abstract void StartServer(int port);

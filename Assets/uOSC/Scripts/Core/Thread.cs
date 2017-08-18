@@ -4,9 +4,9 @@ using System.Threading;
 namespace uOSC
 {
 
-public class OscThread
+public class Thread
 {
-    Thread thread_;
+    System.Threading.Thread thread_;
     bool isRunning_ = false;
     System.Action loopFunc_ = null;
 
@@ -17,7 +17,7 @@ public class OscThread
         isRunning_ = true;
         loopFunc_ = loopFunc;
 
-        thread_ = new Thread(() => 
+        thread_ = new System.Threading.Thread(() => 
         {
             while (isRunning_)
             {
@@ -25,7 +25,7 @@ public class OscThread
                 {
                     loopFunc_();
                 }
-                Thread.Sleep(0);
+                System.Threading.Thread.Sleep(0);
             }
         });
         thread_.Start();

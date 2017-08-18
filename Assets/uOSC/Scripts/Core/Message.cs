@@ -3,11 +3,11 @@
 namespace uOSC
 {
 
-public struct OscNtpTimestamp
+public struct NtpTimestamp
 {
     public UInt64 value;
 
-    public OscNtpTimestamp(UInt64 value = 0x1u)
+    public NtpTimestamp(UInt64 value = 0x1u)
     {
         this.value = value;
     }
@@ -27,19 +27,19 @@ public struct OscNtpTimestamp
     }
 }
 
-public struct OscMessage
+public struct Message
 {
     public string address;
-    public OscNtpTimestamp timestamp;
+    public NtpTimestamp timestamp;
     public object[] values;
 
-    public static OscMessage none
+    public static Message none
     {
         get 
         { 
-            return new OscMessage() { 
+            return new Message() { 
                 address = "", 
-                timestamp = new OscNtpTimestamp(),
+                timestamp = new NtpTimestamp(),
                 values = null
             };
         }

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace uOSC
 {
 
-public class OscClient : MonoBehaviour
+public class uOscClient : MonoBehaviour
 {
     private const int BufferSize = 8192;
 
@@ -22,10 +22,10 @@ public class OscClient : MonoBehaviour
 #if UNITY_UWP
     // TODO: implement
 #else
-    OscUdp udp_ = new OscUdpDotNet();
+    Udp udp_ = new UdpDotNet();
 #endif
-    OscThread thread_ = new OscThread();
-    Queue<OscMessage> messages_ = new Queue<OscMessage>();
+    Thread thread_ = new Thread();
+    Queue<Message> messages_ = new Queue<Message>();
     object lockObject_ = new object();
 
     void OnEnable()
@@ -44,7 +44,7 @@ public class OscClient : MonoBehaviour
     {
         while (messages_.Count > 0)
         {
-            OscMessage message;
+            Message message;
             lock (lockObject_)
             {
                 message = messages_.Dequeue();
@@ -64,7 +64,7 @@ public class OscClient : MonoBehaviour
 
     public void Send(string address, params object[] values)
     {
-        var message = new OscMessage() 
+        var message = new Message() 
         {
             address = address,
             values = values
@@ -77,7 +77,7 @@ public class OscClient : MonoBehaviour
 
     void FillZeros(MemoryStream stream, int preBufferSize, bool isString)
     {
-        var bufferSize = OscUtil.ConvertOffsetToMultipleOfFour(preBufferSize);
+        var bufferSize = Util.ConvertOffsetToMultipleOfFour(preBufferSize);
 
         var size = bufferSize - preBufferSize;
         if (isString && size == 0)
@@ -87,7 +87,7 @@ public class OscClient : MonoBehaviour
 
         if (size > 0)
         {
-            stream.Write(OscUtil.zeros, 0, size);
+            stream.Write(Util.zeros, 0, size);
         }
     }
 

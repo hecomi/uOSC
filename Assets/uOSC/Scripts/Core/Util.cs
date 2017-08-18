@@ -4,7 +4,7 @@ using System;
 namespace uOSC
 {
 
-public static class OscUtil
+public static class Util
 {
     public static readonly byte zero = Convert.ToByte('\0');
     public static readonly byte[] zeros = { zero, zero, zero, zero };
