@@ -83,7 +83,7 @@ public class Parser
         var types = ParseString(buf, ref pos).Substring(1);
 
         var n = types.Length;
-        if (n == 0) return null;
+        if (n == 0) return Util.EmptyObjectArray;
 
         var data = new object[n];
 

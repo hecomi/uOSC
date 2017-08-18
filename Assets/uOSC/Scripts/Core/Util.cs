@@ -18,6 +18,7 @@ public static class Util
 {
     private static readonly byte Zero = Convert.ToByte('\0');
     public static readonly byte[] Zeros = { Zero, Zero, Zero, Zero };
+    public static readonly object[] EmptyObjectArray = new object[0];
 
     public static bool IsMultipleOfFour(int num)
     {
