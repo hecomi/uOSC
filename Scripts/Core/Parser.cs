@@ -106,8 +106,8 @@ public class Parser
 
     string ParseString(byte[] buf, ref int pos)
     {
-        // TODO: make safer
         int size = 0;
+        int bufSize = buf.Length;
         for (; buf[pos + size] != 0; ++size);
         var value = Encoding.UTF8.GetString(buf, pos, size);
         pos += Util.GetStringOffset(size);
