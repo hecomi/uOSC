@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Threading;
 
 namespace uOSC
@@ -19,13 +20,21 @@ public class Thread
 
         thread_ = new System.Threading.Thread(() => 
         {
-            while (isRunning_)
+            try
             {
-                if (loopFunc_ != null) 
+                while (isRunning_)
                 {
-                    loopFunc_();
+                    if (loopFunc_ != null) 
+                    {
+                        loopFunc_();
+                    }
+                    System.Threading.Thread.Sleep(0);
                 }
-                System.Threading.Thread.Sleep(0);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                Debug.LogError(e.StackTrace);
             }
         });
         thread_.Start();

@@ -47,8 +47,8 @@ public class UdpDotNet : Udp
 
     public override void Stop()
     {
-        udpClient_.Close();
         thread_.Stop();
+        udpClient_.Close();
     }
 
     public override void Send(byte[] data, int size)

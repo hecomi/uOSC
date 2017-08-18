@@ -4,15 +4,30 @@ using System;
 namespace uOSC
 {
 
+public static class Identifier
+{
+    public const string bundle = "#bundle";
+}
+
 public static class Util
 {
     public static readonly byte zero = Convert.ToByte('\0');
     public static readonly byte[] zeros = { zero, zero, zero, zero };
-    public static readonly string bundleIdentifier = "#bundle";
 
-    public static int ConvertOffsetToMultipleOfFour(int pos)
+    public static bool IsMultipleOfFour(int num)
     {
-        return (pos + 4) & ~0x3;
+        return num == (num & ~0x3);
+    }
+
+    public static int GetStringOffset(int size)
+    {
+        return (size + 4) & ~0x3;
+    }
+
+    public static int GetBufferOffset(int size)
+    {
+        var offset = size & ~0x3;
+        return (offset == size) ? size : (offset + 4);
     }
 
     static bool CheckType(object value, System.Type type)
