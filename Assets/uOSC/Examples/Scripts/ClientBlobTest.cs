@@ -4,7 +4,7 @@ namespace uOSC
 {
 
 [RequireComponent(typeof(uOscClient))]
-public class OscClientBlobTest : MonoBehaviour
+public class ClientBlobTest : MonoBehaviour
 {
     [SerializeField]
     Texture2D texture;

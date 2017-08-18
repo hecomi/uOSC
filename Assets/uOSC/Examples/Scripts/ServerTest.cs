@@ -4,7 +4,7 @@ namespace uOSC
 {
 
 [RequireComponent(typeof(uOscServer))]
-public class OscServerTest : MonoBehaviour
+public class ServerTest : MonoBehaviour
 {
     void Start()
     {
