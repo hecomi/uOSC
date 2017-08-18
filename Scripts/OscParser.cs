@@ -9,8 +9,6 @@ namespace uOSC
 
 public class OscParser
 {
-    const string BundleIdentifier = "#bundle";
-
     object lockObject_ = new object();
     Queue<OscMessage> messages_ = new Queue<OscMessage>();
 
@@ -23,7 +21,7 @@ public class OscParser
     {
         var first = ParseString(buf, ref pos);
 
-        if (first == BundleIdentifier)
+        if (first == OscUtil.bundleIdentifier)
         {
             ParseBundle(buf, ref pos, size);
         }

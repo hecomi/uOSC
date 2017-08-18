@@ -8,6 +8,7 @@ public static class OscUtil
 {
     public static readonly byte zero = Convert.ToByte('\0');
     public static readonly byte[] zeros = { zero, zero, zero, zero };
+    public static readonly string bundleIdentifier = "#bundle";
 
     public static int ConvertOffsetToMultipleOfFour(int pos)
     {
