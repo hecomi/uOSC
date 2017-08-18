@@ -87,7 +87,7 @@ public class uOscClient : MonoBehaviour
 
         if (size > 0)
         {
-            stream.Write(Util.zeros, 0, size);
+            stream.Write(Util.Zeros, 0, size);
         }
     }
 
@@ -104,10 +104,10 @@ public class uOscClient : MonoBehaviour
         for (int i = 0; i < values.Length; ++i)
         {
             var value = values[i];
-            if      (value is int)    types += "i";
-            else if (value is float)  types += "f";
-            else if (value is string) types += "s";
-            else if (value is byte[]) types += "b";
+            if      (value is int)    types += Identifier.Int;
+            else if (value is float)  types += Identifier.Float;
+            else if (value is string) types += Identifier.String;
+            else if (value is byte[]) types += Identifier.Blob;
         }
 
         var byteTypes = Encoding.UTF8.GetBytes(types);

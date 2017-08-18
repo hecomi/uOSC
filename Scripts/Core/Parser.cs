@@ -21,7 +21,7 @@ public class Parser
     {
         var first = ParseString(buf, ref pos);
 
-        if (first == Identifier.bundle)
+        if (first == Identifier.Bundle)
         {
             ParseBundle(buf, ref pos, endPos);
         }
@@ -91,10 +91,10 @@ public class Parser
         {
             switch (types[i])
             {
-                case 'i': data[i] = ParseInt(buf, ref pos);    break;
-                case 'f': data[i] = ParseFloat(buf, ref pos);  break;
-                case 's': data[i] = ParseString(buf, ref pos); break;
-                case 'b': data[i] = ParseBlob(buf, ref pos);   break;
+                case Identifier.Int    : data[i] = ParseInt(buf, ref pos);    break;
+                case Identifier.Float  : data[i] = ParseFloat(buf, ref pos);  break;
+                case Identifier.String : data[i] = ParseString(buf, ref pos); break;
+                case Identifier.Blob   : data[i] = ParseBlob(buf, ref pos);   break;
                 default:
                     // Add more types here if you want to handle them.
                     break;
