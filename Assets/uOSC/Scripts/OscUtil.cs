@@ -43,6 +43,16 @@ public static class OscUtil
     {
         return CheckType(value, typeof(byte[])) ? (byte[])value : null;
     }
+
+    public static string GetString(this object value)
+    {
+        if (value is int)    return value.AsInt().ToString();
+        if (value is float)  return value.AsFloat().ToString();
+        if (value is string) return value.AsString();
+        if (value is byte[]) return "Byte[" + value.AsBlob().Length + "]";
+
+        return value.ToString();
+    }
 }
 
 }

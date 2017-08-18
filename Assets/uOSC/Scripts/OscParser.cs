@@ -9,6 +9,8 @@ namespace uOSC
 
 public class OscParser
 {
+    const string BundleIdentifier = "#bundle";
+
     object lockObject_ = new object();
     Queue<OscMessage> messages_ = new Queue<OscMessage>();
 
@@ -17,21 +19,26 @@ public class OscParser
         get { return messages_.Count; }
     }
 
-    public void Parse(Byte[] buf, bool clearOldData = false)
+    public void Parse(byte[] buf, ref int pos, int size, ulong timestamp = 0x1u)
     {
-        if (clearOldData)
-        {
-            messages_.Clear();
-        }
+        var first = ParseString(buf, ref pos);
 
-        lock (lockObject_)
+        if (first == BundleIdentifier)
         {
-            int pos = 0;
-            messages_.Enqueue(new OscMessage() 
+            ParseBundle(buf, ref pos, size);
+        }
+        else
+        {
+            var values = ParseData(buf, ref pos);
+            lock (lockObject_)
             {
-                address = ParseAddress(buf, ref pos),
-                values = ParseData(buf, ref pos)
-            });
+                messages_.Enqueue(new OscMessage() 
+                {
+                    address = first,
+                    timestamp = new OscNtpTimestamp(timestamp),
+                    values = values
+                });
+            }
         }
     }
 
@@ -48,12 +55,18 @@ public class OscParser
         }
     }
 
-    string ParseAddress(Byte[] buf, ref int pos)
+    void ParseBundle(byte[] buf, ref int pos, int size)
     {
-        return ParseString(buf, ref pos);
+        var time = ParseTimetag(buf, ref pos);
+
+        while (pos < size)
+        {
+            var bundleSize = ParseInt(buf, ref pos);
+            Parse(buf, ref pos, bundleSize, time);
+        }
     }
 
-    object[] ParseData(Byte[] buf, ref int pos)
+    object[] ParseData(byte[] buf, ref int pos)
     {
         var types = ParseString(buf, ref pos).Substring(1);
 
@@ -79,7 +92,7 @@ public class OscParser
         return data;
     }
 
-    string ParseString(Byte[] buf, ref int pos)
+    string ParseString(byte[] buf, ref int pos)
     {
         int size = 0;
         for (; buf[pos + size] != 0; ++size);
@@ -88,7 +101,7 @@ public class OscParser
         return value;
     }
 
-    int ParseInt(Byte[] buf, ref int pos)
+    int ParseInt(byte[] buf, ref int pos)
     {
         Array.Reverse(buf, pos, 4);
         var value = BitConverter.ToInt32(buf, pos);
@@ -96,7 +109,7 @@ public class OscParser
         return value;
     }
 
-    float ParseFloat(Byte[] buf, ref int pos)
+    float ParseFloat(byte[] buf, ref int pos)
     {
         Array.Reverse(buf, pos, 4);
         var value = BitConverter.ToSingle(buf, pos);
@@ -104,13 +117,21 @@ public class OscParser
         return value;
     }
 
-    Byte[] ParseBlob(Byte[] buf, ref int pos)
+    byte[] ParseBlob(byte[] buf, ref int pos)
     {
         var size = ParseInt(buf, ref pos);
-        var tmp = new Byte[size];
+        var tmp = new byte[size];
         Buffer.BlockCopy(buf, pos, tmp, 0, size);
         pos += OscUtil.ConvertOffsetToMultipleOfFour(size);
         return tmp;
+    }
+
+    ulong ParseTimetag(byte[] buf, ref int pos)
+    {
+        Array.Reverse(buf, pos, 8);
+        var value = BitConverter.ToUInt64(buf, pos);
+        pos += 8;
+        return value;
     }
 }
 

@@ -54,8 +54,9 @@ public class OscServer : MonoBehaviour
     {
         while (udp_.messageCount > 0) 
         {
-            var buffer = udp_.Receive();
-            parser_.Parse(buffer);
+            var buf = udp_.Receive();
+            int pos = 0;
+            parser_.Parse(buf, ref pos, buf.Length);
         }
     }
 }
