@@ -7,10 +7,10 @@ using System.Collections.Generic;
 namespace uOSC
 {
 
-public class OscParser
+public class Parser
 {
     object lockObject_ = new object();
-    Queue<OscMessage> messages_ = new Queue<OscMessage>();
+    Queue<Message> messages_ = new Queue<Message>();
 
     public int messageCount
     {
@@ -21,7 +21,7 @@ public class OscParser
     {
         var first = ParseString(buf, ref pos);
 
-        if (first == OscUtil.bundleIdentifier)
+        if (first == Util.bundleIdentifier)
         {
             ParseBundle(buf, ref pos, size);
         }
@@ -30,21 +30,21 @@ public class OscParser
             var values = ParseData(buf, ref pos);
             lock (lockObject_)
             {
-                messages_.Enqueue(new OscMessage() 
+                messages_.Enqueue(new Message() 
                 {
                     address = first,
-                    timestamp = new OscNtpTimestamp(timestamp),
+                    timestamp = new NtpTimestamp(timestamp),
                     values = values
                 });
             }
         }
     }
 
-    public OscMessage Dequeue()
+    public Message Dequeue()
     {
         if (messageCount == 0)
         {
-            return OscMessage.none;
+            return Message.none;
         }
 
         lock (lockObject_)
@@ -95,7 +95,7 @@ public class OscParser
         int size = 0;
         for (; buf[pos + size] != 0; ++size);
         var value = Encoding.UTF8.GetString(buf, pos, size);
-        pos += OscUtil.ConvertOffsetToMultipleOfFour(size);
+        pos += Util.ConvertOffsetToMultipleOfFour(size);
         return value;
     }
 
@@ -120,7 +120,7 @@ public class OscParser
         var size = ParseInt(buf, ref pos);
         var tmp = new byte[size];
         Buffer.BlockCopy(buf, pos, tmp, 0, size);
-        pos += OscUtil.ConvertOffsetToMultipleOfFour(size);
+        pos += Util.ConvertOffsetToMultipleOfFour(size);
         return tmp;
     }
 

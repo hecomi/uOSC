@@ -6,14 +6,14 @@ using System.Net.Sockets;
 namespace uOSC
 {
 
-public class OscUdpDotNet : OscUdp
+public class UdpDotNet : Udp
 {
     Queue<byte[]> messageQueue_ = new Queue<byte[]>();
     object lockObject_ = new object();
 
     UdpClient udpClient_;
     IPEndPoint endPoint_;
-    OscThread thread_ = new OscThread();
+    Thread thread_ = new Thread();
 
     public override int messageCount
     {

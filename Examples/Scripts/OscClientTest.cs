@@ -3,12 +3,12 @@
 namespace uOSC
 {
 
-[RequireComponent(typeof(OscClient))]
+[RequireComponent(typeof(uOscClient))]
 public class OscClientTest : MonoBehaviour
 {
     void Update()
     {
-        var client = GetComponent<OscClient>();
+        var client = GetComponent<uOscClient>();
         client.Send("/uOSC/test", 10, "hoge", "hogehoge", 1.234f, 123f);
     }
 }

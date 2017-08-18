@@ -3,7 +3,7 @@
 namespace uOSC
 {
 
-[RequireComponent(typeof(OscClient))]
+[RequireComponent(typeof(uOscClient))]
 public class OscClientBlobTest : MonoBehaviour
 {
     [SerializeField]
@@ -18,7 +18,7 @@ public class OscClientBlobTest : MonoBehaviour
 
     void Update()
     {
-        var client = GetComponent<OscClient>();
+        var client = GetComponent<uOscClient>();
         client.Send("/uOSC/blob", byteTexture_);
     }
 }
