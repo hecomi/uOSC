@@ -7,6 +7,8 @@ namespace uOSC
 
 public class Thread
 {
+    private const int IntervalMillisec = 1;
+
     System.Threading.Thread thread_;
     bool isRunning_ = false;
     System.Action loopFunc_ = null;
@@ -28,7 +30,7 @@ public class Thread
                     {
                         loopFunc_();
                     }
-                    System.Threading.Thread.Sleep(0);
+                    System.Threading.Thread.Sleep(IntervalMillisec);
                 }
             }
             catch (Exception e)
