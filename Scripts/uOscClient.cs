@@ -77,7 +77,7 @@ public class uOscClient : MonoBehaviour
 
     void FillZeros(MemoryStream stream, int preBufferSize, bool isString)
     {
-        var bufferSize = Util.ConvertOffsetToMultipleOfFour(preBufferSize);
+        var bufferSize = Util.GetStringOffset(preBufferSize);
 
         var size = bufferSize - preBufferSize;
         if (isString && size == 0)

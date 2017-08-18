@@ -17,13 +17,13 @@ public class Parser
         get { return messages_.Count; }
     }
 
-    public void Parse(byte[] buf, ref int pos, int size, ulong timestamp = 0x1u)
+    public void Parse(byte[] buf, ref int pos, int endPos, ulong timestamp = 0x1u)
     {
         var first = ParseString(buf, ref pos);
 
-        if (first == Util.bundleIdentifier)
+        if (first == Identifier.bundle)
         {
-            ParseBundle(buf, ref pos, size);
+            ParseBundle(buf, ref pos, endPos);
         }
         else
         {
@@ -37,6 +37,11 @@ public class Parser
                     values = values
                 });
             }
+        }
+
+        if (pos != endPos)
+        {
+            Debug.LogError("The parsed data size is inconsitent with given size.");
         }
     }
 
@@ -53,19 +58,28 @@ public class Parser
         }
     }
 
-    void ParseBundle(byte[] buf, ref int pos, int size)
+    void ParseBundle(byte[] buf, ref int pos, int endPos)
     {
         var time = ParseTimetag(buf, ref pos);
 
-        while (pos < size)
+        while (pos < endPos)
         {
-            var bundleSize = ParseInt(buf, ref pos);
-            Parse(buf, ref pos, bundleSize, time);
+            var contentSize = ParseInt(buf, ref pos);
+            if (Util.IsMultipleOfFour(contentSize))
+            {
+                Parse(buf, ref pos, pos + contentSize, time);
+            }
+            else
+            {
+                Debug.LogErrorFormat("Given data is invalid (bundle size ({0}) is not a multiple of 4).", contentSize);
+                pos += contentSize;
+            }
         }
     }
 
     object[] ParseData(byte[] buf, ref int pos)
     {
+        // remove ','
         var types = ParseString(buf, ref pos).Substring(1);
 
         var n = types.Length;
@@ -92,10 +106,11 @@ public class Parser
 
     string ParseString(byte[] buf, ref int pos)
     {
+        // TODO: make safer
         int size = 0;
         for (; buf[pos + size] != 0; ++size);
         var value = Encoding.UTF8.GetString(buf, pos, size);
-        pos += Util.ConvertOffsetToMultipleOfFour(size);
+        pos += Util.GetStringOffset(size);
         return value;
     }
 
@@ -118,10 +133,10 @@ public class Parser
     byte[] ParseBlob(byte[] buf, ref int pos)
     {
         var size = ParseInt(buf, ref pos);
-        var tmp = new byte[size];
-        Buffer.BlockCopy(buf, pos, tmp, 0, size);
-        pos += Util.ConvertOffsetToMultipleOfFour(size);
-        return tmp;
+        var value = new byte[size];
+        Buffer.BlockCopy(buf, pos, value, 0, size);
+        pos += Util.GetBufferOffset(size);
+        return value;
     }
 
     ulong ParseTimetag(byte[] buf, ref int pos)
