@@ -5,7 +5,7 @@ namespace uOSC
 
 [RequireComponent(typeof(uOscServer)),
  RequireComponent(typeof(Renderer))]
-public class OscServerBlobTest : MonoBehaviour
+public class ServerBlobTest : MonoBehaviour
 {
     Texture2D texture_;
 

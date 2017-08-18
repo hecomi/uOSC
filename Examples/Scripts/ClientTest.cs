@@ -4,7 +4,7 @@ namespace uOSC
 {
 
 [RequireComponent(typeof(uOscClient))]
-public class OscClientTest : MonoBehaviour
+public class ClientTest : MonoBehaviour
 {
     void Update()
     {
