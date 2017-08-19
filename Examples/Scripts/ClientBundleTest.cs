@@ -11,13 +11,12 @@ public class ClientBundleTest : MonoBehaviour
         var client = GetComponent<uOscClient>();
 
         var bundle1 = new Bundle(Timestamp.Immediate);
-        bundle1.Add(new Message("/uOSC/root/bundle1/message1", 123, "hoge"));
+        bundle1.Add(new Message("/uOSC/root/bundle1/message1", 123, "hoge", new byte[] { 1, 2, 3, 4 }));
         bundle1.Add(new Message("/uOSC/root/bundle1/message2", 1.2345f));
         bundle1.Add(new Message("/uOSC/root/bundle1/message3", "abcdefghijklmn"));
-        bundle1.Add(new Message("/uOSC/root/bundle1/message4", new byte[] { 1, 2, 3, 4 }));
 
         var bundle2 = new Bundle(Timestamp.Immediate);
-        bundle2.Add(new Message("/uOSC/root/bundle2/message1", 234, "fuga"));
+        bundle2.Add(new Message("/uOSC/root/bundle2/message1", 234, "fuga", new byte[] { 2, 3, 4 }));
         bundle2.Add(new Message("/uOSC/root/bundle2/message2", 2.3456f));
         bundle2.Add(new Message("/uOSC/root/bundle2/message3", "opqrstuvwxyz"));
 
