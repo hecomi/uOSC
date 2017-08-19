@@ -25,12 +25,12 @@ public static class Util
         return num == (num & ~0x3);
     }
 
-    public static int GetStringOffset(int size)
+    public static int GetStringAlignedSize(int size)
     {
         return (size + 4) & ~0x3;
     }
 
-    public static int GetBufferOffset(int size)
+    public static int GetBufferAlignedSize(int size)
     {
         var offset = size & ~0x3;
         return (offset == size) ? size : (offset + 4);

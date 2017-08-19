@@ -113,7 +113,7 @@ public class Parser
         int bufSize = buf.Length;
         for (; buf[pos + size] != 0; ++size);
         var value = Encoding.UTF8.GetString(buf, pos, size);
-        pos += Util.GetStringOffset(size);
+        pos += Util.GetStringAlignedSize(size);
         return value;
     }
 
@@ -138,7 +138,7 @@ public class Parser
         var size = ParseInt(buf, ref pos);
         var value = new byte[size];
         Buffer.BlockCopy(buf, pos, value, 0, size);
-        pos += Util.GetBufferOffset(size);
+        pos += Util.GetBufferAlignedSize(size);
         return value;
     }
 
