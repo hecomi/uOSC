@@ -26,7 +26,7 @@ public struct Timestamp
         var msec = span.TotalMilliseconds - sec * 1000;
         var integerPart = (UInt32)sec;
         var decimalPart = (UInt32)msec;
-        var timestamp = ((UInt64)sec << 32) | (UInt64)msec;
+        var timestamp = ((UInt64)integerPart << 32) | (UInt64)decimalPart;
         return new Timestamp(timestamp);
     }
 
@@ -41,7 +41,10 @@ public struct Timestamp
 
     public DateTime ToLocalTime()
     {
-        return TimeZoneInfo.ConvertTimeFromUtc(ToUtcTime(), TimeZoneInfo.Local);
+        // TimeZonInfo.Local occurs an exception in some platforms
+        var utc = ToUtcTime();
+        var timeZone = TimeZone.CurrentTimeZone;
+        return utc + timeZone.GetUtcOffset(DateTime.Now);
     }
 }
 
