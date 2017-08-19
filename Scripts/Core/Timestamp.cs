@@ -5,9 +5,11 @@ namespace uOSC
 
 public struct Timestamp
 {
+    public static readonly Timestamp Immediate = new Timestamp(0x1u);
+
     public UInt64 value;
 
-    public Timestamp(UInt64 value = 0x1u)
+    public Timestamp(UInt64 value)
     {
         this.value = value;
     }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
+﻿using System.IO;
 
 namespace uOSC
 {
@@ -16,12 +13,20 @@ public struct Message
     {
         get 
         { 
-            return new Message() { 
+            return new Message() 
+            { 
                 address = "", 
                 timestamp = new Timestamp(),
                 packet = null
             };
         }
+    }
+
+    public Message(string address, params object[] packet)
+    {
+        this.address = address;
+        this.timestamp = new Timestamp();
+        this.packet = packet;
     }
 
     public void Write(MemoryStream stream)
