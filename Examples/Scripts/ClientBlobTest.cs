@@ -13,7 +13,11 @@ public class ClientBlobTest : MonoBehaviour
 
     void Start()
     {
+#if UNITY_2017
         byteTexture_ = ImageConversion.EncodeToPNG(texture);
+#else
+        byteTexture_ = texture.EncodeToPNG();
+#endif
     }
 
     void Update()
