@@ -11,15 +11,7 @@ public struct Message
 
     public static Message none
     {
-        get 
-        { 
-            return new Message() 
-            { 
-                address = "", 
-                timestamp = new Timestamp(),
-                packet = null
-            };
-        }
+        get { return new Message(""); } 
     }
 
     public Message(string address, params object[] packet)
