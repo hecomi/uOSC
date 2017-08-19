@@ -27,14 +27,14 @@ public class Parser
         }
         else
         {
-            var values = ParseData(buf, ref pos);
+            var packet = ParseData(buf, ref pos);
             lock (lockObject_)
             {
                 messages_.Enqueue(new Message() 
                 {
                     address = first,
-                    timestamp = new NtpTimestamp(timestamp),
-                    values = values
+                    timestamp = new Timestamp(timestamp),
+                    packet = packet
                 });
             }
         }
