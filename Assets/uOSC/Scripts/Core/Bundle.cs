@@ -1,16 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System.IO;
+using System.Collections.Generic;
 
 namespace uOSC
 {
 
 public class Bundle
 {
-    // TODO: implement
-    /*
     public Timestamp timestamp;
-    private List<Message> messages_ = new List<Message>();
-    private List<Bundle> bundles_ = new List<Bundle>();
-    */
+    private List<object> elements_ = new List<object>();
+
+    public void AddMessage(Message message)
+    {
+        elements_.Add(message);
+    }
+
+    public void AddBundle(Bundle bundle)
+    {
+        elements_.Add(bundle);
+    }
+
+    public void Write(MemoryStream stream)
+    {
+    }
 }
 
 }

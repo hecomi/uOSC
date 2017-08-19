@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using System.Threading;
 
 namespace uOSC
 {
@@ -11,7 +10,7 @@ public class Thread
 
     System.Threading.Thread thread_;
     bool isRunning_ = false;
-    System.Action loopFunc_ = null;
+    Action loopFunc_ = null;
 
     public void Start(System.Action loopFunc)
     {
