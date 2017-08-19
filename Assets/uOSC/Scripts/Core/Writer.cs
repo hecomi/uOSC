@@ -37,6 +37,13 @@ public static class Writer
         stream.Write(byteValue, 0, byteValue.Length);
     }
 
+    public static void Write(MemoryStream stream, Timestamp value)
+    {
+        var byteValue = BitConverter.GetBytes(value.value);
+        Array.Reverse(byteValue);
+        stream.Write(byteValue, 0, byteValue.Length);
+    }
+
     public static void Write(MemoryStream stream, float value)
     {
         var byteValue = BitConverter.GetBytes(value);
@@ -56,8 +63,16 @@ public static class Writer
         var byteValue = value.AsBlob();
         var size = byteValue.Length;
         Write(stream, size);
-        stream.Write(byteValue, 0, byteValue.Length);
-        FillZeros(stream, byteValue.Length, false);
+        stream.Write(byteValue, 0, size);
+        FillZeros(stream, size, false);
+    }
+
+    public static void Write(MemoryStream stream, MemoryStream value)
+    {
+        var byteValue = value.GetBuffer();
+        var size = (int)value.Position;
+        Write(stream, size);
+        stream.Write(byteValue, 0, size);
     }
 }
 

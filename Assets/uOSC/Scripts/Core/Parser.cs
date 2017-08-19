@@ -41,7 +41,10 @@ public class Parser
 
         if (pos != endPos)
         {
-            Debug.LogError("The parsed data size is inconsitent with given size.");
+            Debug.LogErrorFormat(
+                "The parsed data size is inconsitent with the given size: {0} / {1}", 
+                pos,
+                endPos);
         }
     }
 

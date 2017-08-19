@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
-using System;
-using System.Net;
-using System.Net.Sockets;
 using System.IO;
-using System.Text;
 using System.Collections.Generic;
 
 namespace uOSC
@@ -26,6 +22,7 @@ public class uOscClient : MonoBehaviour
 #endif
     Thread thread_ = new Thread();
     Queue<Message> messages_ = new Queue<Message>();
+    Queue<Bundle> bundles_ = new Queue<Bundle>();
     object lockObject_ = new object();
 
     void OnEnable()
@@ -42,6 +39,12 @@ public class uOscClient : MonoBehaviour
 
     void UpdateSend()
     {
+        UpdateSendMessages();
+        UpdateSendBundles();
+    }
+
+    void UpdateSendMessages()
+    {
         while (messages_.Count > 0)
         {
             Message message;
@@ -53,6 +56,24 @@ public class uOscClient : MonoBehaviour
             using (var stream = new MemoryStream(BufferSize))
             {
                 message.Write(stream);
+                udp_.Send(stream.GetBuffer(), (int)stream.Position);
+            }
+        }
+    }
+
+    void UpdateSendBundles()
+    {
+        while (bundles_.Count > 0)
+        {
+            Bundle bundle;
+            lock (lockObject_)
+            {
+                bundle = bundles_.Dequeue();
+            }
+
+            using (var stream = new MemoryStream(BufferSize))
+            {
+                bundle.Write(stream);
                 udp_.Send(stream.GetBuffer(), (int)stream.Position);
             }
         }
@@ -77,7 +98,10 @@ public class uOscClient : MonoBehaviour
 
     public void Send(Bundle bundle)
     {
-        // TODO: implement
+        lock (lockObject_)
+        {
+            bundles_.Enqueue(bundle);
+        }
     }
 }
 
