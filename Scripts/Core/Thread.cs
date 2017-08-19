@@ -14,7 +14,7 @@ public class Thread
 
     public void Start(System.Action loopFunc)
     {
-        if (isRunning_) return;
+        if (isRunning_ || loopFunc == null) return;
 
         isRunning_ = true;
         loopFunc_ = loopFunc;
@@ -25,10 +25,7 @@ public class Thread
             {
                 while (isRunning_)
                 {
-                    if (loopFunc_ != null) 
-                    {
-                        loopFunc_();
-                    }
+                    loopFunc_();
                     System.Threading.Thread.Sleep(IntervalMillisec);
                 }
             }
