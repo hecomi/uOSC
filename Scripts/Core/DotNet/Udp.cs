@@ -1,5 +1,6 @@
 ﻿#if !NETFX_CORE
 
+using UnityEngine;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -9,6 +10,14 @@ namespace uOSC.DotNet
 
 public class Udp : uOSC.Udp
 {
+    enum State
+    {
+        Stop,
+        Server,
+        Client,
+    }
+    State state_ = State.Stop;
+
     Queue<byte[]> messageQueue_ = new Queue<byte[]>();
     object lockObject_ = new object();
 
@@ -23,6 +32,9 @@ public class Udp : uOSC.Udp
 
     public override void StartServer(int port)
     {
+        Stop();
+        state_ = State.Server;
+
         endPoint_ = new IPEndPoint(IPAddress.Any, port);
         udpClient_ = new UdpClient(endPoint_);
         thread_.Start(() => 
@@ -40,6 +52,9 @@ public class Udp : uOSC.Udp
 
     public override void StartClient(string address, int port)
     {
+        Stop();
+        state_ = State.Client;
+
         var ip = IPAddress.Parse(address);
         endPoint_ = new IPEndPoint(ip, port);
         udpClient_ = new UdpClient();
@@ -47,8 +62,11 @@ public class Udp : uOSC.Udp
 
     public override void Stop()
     {
+        if (state_ == State.Stop) return;
+
         thread_.Stop();
         udpClient_.Close();
+        state_ = State.Stop;
     }
 
     public override void Send(byte[] data, int size)
