@@ -12,6 +12,12 @@ Platforms
 
 I've not checked Android and iOS yet...
 
+Install
+-------
+
+Download the latest `.unitypackage` from [Release page](https://github.com/hecomi/uOSC/releases)
+and import it to your Unity project.
+
 How to use
 ----------
 
