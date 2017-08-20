@@ -24,7 +24,7 @@ public class ServerBlobTest : MonoBehaviour
     {
         if (message.address == "/uOSC/blob")
         {
-            var byteTexture = message.packet[0].AsBlob();
+            var byteTexture = message.values[0].AsBlob();
 #if UNITY_2017
             ImageConversion.LoadImage(texture_, byteTexture, true);
 #else

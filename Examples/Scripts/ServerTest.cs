@@ -21,7 +21,7 @@ public class ServerTest : MonoBehaviour
         msg += "(" + message.timestamp.ToLocalTime() + ") ";
 
         // values
-        foreach (var value in message.packet)
+        foreach (var value in message.values)
         {
             msg += value.GetString() + " ";
         }

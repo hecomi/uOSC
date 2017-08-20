@@ -85,7 +85,7 @@ public class uOscClient : MonoBehaviour
         Send(new Message() 
         {
             address = address,
-            packet = values
+            values = values
         });
     }
 

@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System;
-using System.Text;
 using System.Collections.Generic;
 
 namespace uOSC
@@ -8,6 +6,8 @@ namespace uOSC
 
 public class Parser
 {
+    public static readonly object[] EmptyObjectArray = new object[0];
+
     object lockObject_ = new object();
     Queue<Message> messages_ = new Queue<Message>();
 
@@ -18,7 +18,7 @@ public class Parser
 
     public void Parse(byte[] buf, ref int pos, int endPos, ulong timestamp = 0x1u)
     {
-        var first = ParseString(buf, ref pos);
+        var first = Reader.ParseString(buf, ref pos);
 
         if (first == Identifier.Bundle)
         {
@@ -26,14 +26,14 @@ public class Parser
         }
         else
         {
-            var packet = ParseData(buf, ref pos);
+            var values = ParseData(buf, ref pos);
             lock (lockObject_)
             {
                 messages_.Enqueue(new Message() 
                 {
                     address = first,
                     timestamp = new Timestamp(timestamp),
-                    packet = packet
+                    values = values
                 });
             }
         }
@@ -62,11 +62,11 @@ public class Parser
 
     void ParseBundle(byte[] buf, ref int pos, int endPos)
     {
-        var time = ParseTimetag(buf, ref pos);
+        var time = Reader.ParseTimetag(buf, ref pos);
 
         while (pos < endPos)
         {
-            var contentSize = ParseInt(buf, ref pos);
+            var contentSize = Reader.ParseInt(buf, ref pos);
             if (Util.IsMultipleOfFour(contentSize))
             {
                 Parse(buf, ref pos, pos + contentSize, time);
@@ -82,10 +82,10 @@ public class Parser
     object[] ParseData(byte[] buf, ref int pos)
     {
         // remove ','
-        var types = ParseString(buf, ref pos).Substring(1);
+        var types = Reader.ParseString(buf, ref pos).Substring(1);
 
         var n = types.Length;
-        if (n == 0) return Util.EmptyObjectArray;
+        if (n == 0) return EmptyObjectArray;
 
         var data = new object[n];
 
@@ -93,10 +93,10 @@ public class Parser
         {
             switch (types[i])
             {
-                case Identifier.Int    : data[i] = ParseInt(buf, ref pos);    break;
-                case Identifier.Float  : data[i] = ParseFloat(buf, ref pos);  break;
-                case Identifier.String : data[i] = ParseString(buf, ref pos); break;
-                case Identifier.Blob   : data[i] = ParseBlob(buf, ref pos);   break;
+                case Identifier.Int    : data[i] = Reader.ParseInt(buf, ref pos);    break;
+                case Identifier.Float  : data[i] = Reader.ParseFloat(buf, ref pos);  break;
+                case Identifier.String : data[i] = Reader.ParseString(buf, ref pos); break;
+                case Identifier.Blob   : data[i] = Reader.ParseBlob(buf, ref pos);   break;
                 default:
                     // Add more types here if you want to handle them.
                     break;
@@ -104,49 +104,6 @@ public class Parser
         }
 
         return data;
-    }
-
-    string ParseString(byte[] buf, ref int pos)
-    {
-        int size = 0;
-        int bufSize = buf.Length;
-        for (; buf[pos + size] != 0; ++size);
-        var value = Encoding.UTF8.GetString(buf, pos, size);
-        pos += Util.GetStringAlignedSize(size);
-        return value;
-    }
-
-    int ParseInt(byte[] buf, ref int pos)
-    {
-        Array.Reverse(buf, pos, 4);
-        var value = BitConverter.ToInt32(buf, pos);
-        pos += 4;
-        return value;
-    }
-
-    float ParseFloat(byte[] buf, ref int pos)
-    {
-        Array.Reverse(buf, pos, 4);
-        var value = BitConverter.ToSingle(buf, pos);
-        pos += 4;
-        return value;
-    }
-
-    byte[] ParseBlob(byte[] buf, ref int pos)
-    {
-        var size = ParseInt(buf, ref pos);
-        var value = new byte[size];
-        Buffer.BlockCopy(buf, pos, value, 0, size);
-        pos += Util.GetBufferAlignedSize(size);
-        return value;
-    }
-
-    ulong ParseTimetag(byte[] buf, ref int pos)
-    {
-        Array.Reverse(buf, pos, 8);
-        var value = BitConverter.ToUInt64(buf, pos);
-        pos += 8;
-        return value;
     }
 }
 
