@@ -4,16 +4,6 @@ using System.Text;
 namespace uOSC
 {
 
-public static class Identifier
-{
-    public const string Bundle = "#bundle";
-
-    public const char Int    = 'i';
-    public const char Float  = 'f';
-    public const char String = 's';
-    public const char Blob   = 'b';
-}
-
 public static class Reader
 {
     public static string ParseString(byte[] buf, ref int pos)

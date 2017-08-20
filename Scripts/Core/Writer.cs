@@ -44,18 +44,21 @@ public static class Writer
         }
     }
 
-    public static void Write(MemoryStream stream, byte[] value)
+    public static void Write(MemoryStream stream, byte[] value, int size)
     {
-        var byteValue = value.AsBlob();
-        var size = byteValue.Length;
         Write(stream, size);
-        stream.Write(byteValue, 0, size);
+        stream.Write(value, 0, size);
 
         var offset = Util.GetBufferAlignedSize(size) - size;
         if (offset > 0)
         {
             stream.Write(Zeros, 0, offset);
         }
+    }
+
+    public static void Write(MemoryStream stream, byte[] value)
+    {
+        Write(stream, value, value.Length);
     }
 
     public static void Write(MemoryStream stream, MemoryStream value)

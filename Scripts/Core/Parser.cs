@@ -4,6 +4,16 @@ using System.Collections.Generic;
 namespace uOSC
 {
 
+public static class Identifier
+{
+    public const string Bundle = "#bundle";
+
+    public const char Int    = 'i';
+    public const char Float  = 'f';
+    public const char String = 's';
+    public const char Blob   = 'b';
+}
+
 public class Parser
 {
     public static readonly object[] EmptyObjectArray = new object[0];
