@@ -22,8 +22,7 @@ public class uOscClient : MonoBehaviour
     Udp udp_ = new DotNet.Udp();
     Thread thread_ = new DotNet.Thread();
 #endif
-    Queue<Message> messages_ = new Queue<Message>();
-    Queue<Bundle> bundles_ = new Queue<Bundle>();
+    Queue<object> elements_ = new Queue<object>();
     object lockObject_ = new object();
 
     void OnEnable()
@@ -40,41 +39,28 @@ public class uOscClient : MonoBehaviour
 
     void UpdateSend()
     {
-        UpdateSendMessages();
-        UpdateSendBundles();
-    }
-
-    void UpdateSendMessages()
-    {
-        while (messages_.Count > 0)
+        while (elements_.Count > 0)
         {
-            Message message;
+            object element;
             lock (lockObject_)
             {
-                message = messages_.Dequeue();
+                element = elements_.Dequeue();
             }
 
             using (var stream = new MemoryStream(BufferSize))
             {
-                message.Write(stream);
-                udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
-            }
-        }
-    }
-
-    void UpdateSendBundles()
-    {
-        while (bundles_.Count > 0)
-        {
-            Bundle bundle;
-            lock (lockObject_)
-            {
-                bundle = bundles_.Dequeue();
-            }
-
-            using (var stream = new MemoryStream(BufferSize))
-            {
-                bundle.Write(stream);
+                if (element is Message)
+                {
+                    ((Message)element).Write(stream);
+                }
+                else if (element is Bundle)
+                {
+                    ((Bundle)element).Write(stream);
+                }
+                else
+                {
+                    return;
+                }
                 udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
             }
         }
@@ -93,7 +79,7 @@ public class uOscClient : MonoBehaviour
     {
         lock (lockObject_)
         {
-            messages_.Enqueue(message);
+            elements_.Enqueue(message);
         }
     }
 
@@ -101,7 +87,7 @@ public class uOscClient : MonoBehaviour
     {
         lock (lockObject_)
         {
-            bundles_.Enqueue(bundle);
+            elements_.Enqueue(bundle);
         }
     }
 }
