@@ -66,6 +66,7 @@ public class Udp : uOSC.Udp
 
     public override void Stop()
     {
+        socket_.Dispose();
     }
 
     public async override void Send(byte[] data, int size)
