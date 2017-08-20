@@ -1,14 +1,13 @@
 ﻿#if !NETFX_CORE
 
-using UnityEngine;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
-namespace uOSC
+namespace uOSC.DotNet
 {
 
-public class UdpDotNet : Udp
+public class Udp : uOSC.Udp
 {
     Queue<byte[]> messageQueue_ = new Queue<byte[]>();
     object lockObject_ = new object();
@@ -26,7 +25,6 @@ public class UdpDotNet : Udp
     {
         endPoint_ = new IPEndPoint(IPAddress.Any, port);
         udpClient_ = new UdpClient(endPoint_);
-
         thread_.Start(() => 
         {
             while (udpClient_.Available > 0) 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.IO;
 
 namespace uOSC
 {
@@ -74,6 +75,21 @@ public static class Util
         if (value is byte[]) return "Byte[" + value.AsBlob().Length + "]";
 
         return value.ToString();
+    }
+
+    public static byte[] GetBuffer(MemoryStream stream)
+    {
+#if NETFX_CORE
+        ArraySegment<byte> buffer;
+        if (!stream.TryGetBuffer(out buffer))
+        {
+            Debug.LogError("Failed to perform MemoryStream.TryGetBuffer()");
+            return null;
+        }
+        return buffer.Array;
+#else
+        return stream.GetBuffer();
+#endif
     }
 }
 
