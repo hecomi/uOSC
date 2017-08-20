@@ -52,10 +52,10 @@ public struct Message
         for (int i = 0; i < values.Length; ++i)
         {
             var value = values[i];
-            if      (value is int)    Writer.Write(stream, value.AsInt());
-            else if (value is float)  Writer.Write(stream, value.AsFloat());
-            else if (value is string) Writer.Write(stream, value.AsString());
-            else if (value is byte[]) Writer.Write(stream, value.AsBlob());
+            if      (value is int)    Writer.Write(stream, (int)value);
+            else if (value is float)  Writer.Write(stream, (float)value);
+            else if (value is string) Writer.Write(stream, (string)value);
+            else if (value is byte[]) Writer.Write(stream, (byte[])value);
         }
     }
 }
