@@ -82,8 +82,12 @@ public class ClientTest : MonoBehaviour
 }
 ```
 
-Advanced
---------
+Tips
+----
+
+### Start / Stop manually
+
+If you want to start and stop uOSC in runtime, please toggle the `enable` flag of `uOscServer` or `uOscClient`.
 
 ### Send texture
 
@@ -226,6 +230,10 @@ public class ClientBundleTest : MonoBehaviour
     }
 }
 ```
+
+### Increase buffer size
+
+If you want to increaset the size of buffer, please edit the `uOscClient.BufferSize` directly (default is 8192).
 
 
 License
