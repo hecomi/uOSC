@@ -16,11 +16,12 @@ public class uOscClient : MonoBehaviour
     int port = 3333;
 
 #if NETFX_CORE
-    Udp udp_ = new UdpUwp();
+    Udp udp_ = new Uwp.Udp();
+    Thread thread_ = new Uwp.Thread();
 #else
-    Udp udp_ = new UdpDotNet();
+    Udp udp_ = new DotNet.Udp();
+    Thread thread_ = new DotNet.Thread();
 #endif
-    Thread thread_ = new Thread();
     Queue<Message> messages_ = new Queue<Message>();
     Queue<Bundle> bundles_ = new Queue<Bundle>();
     object lockObject_ = new object();
@@ -56,7 +57,7 @@ public class uOscClient : MonoBehaviour
             using (var stream = new MemoryStream(BufferSize))
             {
                 message.Write(stream);
-                udp_.Send(stream.GetBuffer(), (int)stream.Position);
+                udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
             }
         }
     }
@@ -74,7 +75,7 @@ public class uOscClient : MonoBehaviour
             using (var stream = new MemoryStream(BufferSize))
             {
                 bundle.Write(stream);
-                udp_.Send(stream.GetBuffer(), (int)stream.Position);
+                udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
             }
         }
     }

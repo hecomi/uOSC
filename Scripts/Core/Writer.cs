@@ -57,7 +57,7 @@ public static class Writer
 
     public static void Write(MemoryStream stream, MemoryStream value)
     {
-        var byteValue = value.GetBuffer();
+        var byteValue = Util.GetBuffer(value);
         var size = (int)value.Position;
         Write(stream, size);
         stream.Write(byteValue, 0, size);
