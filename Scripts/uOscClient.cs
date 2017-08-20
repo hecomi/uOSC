@@ -8,6 +8,7 @@ namespace uOSC
 public class uOscClient : MonoBehaviour
 {
     private const int BufferSize = 8192;
+    private const int MaxQueueSize = 100;
 
     [SerializeField]
     string address = "127.0.0.1";
@@ -22,7 +23,7 @@ public class uOscClient : MonoBehaviour
     Udp udp_ = new DotNet.Udp();
     Thread thread_ = new DotNet.Thread();
 #endif
-    Queue<object> elements_ = new Queue<object>();
+    Queue<object> messages_ = new Queue<object>();
     object lockObject_ = new object();
 
     void OnEnable()
@@ -39,29 +40,42 @@ public class uOscClient : MonoBehaviour
 
     void UpdateSend()
     {
-        while (elements_.Count > 0)
+        while (messages_.Count > 0)
         {
-            object element;
+            object message;
             lock (lockObject_)
             {
-                element = elements_.Dequeue();
+                message = messages_.Dequeue();
             }
 
             using (var stream = new MemoryStream(BufferSize))
             {
-                if (element is Message)
+                if (message is Message)
                 {
-                    ((Message)element).Write(stream);
+                    ((Message)message).Write(stream);
                 }
-                else if (element is Bundle)
+                else if (message is Bundle)
                 {
-                    ((Bundle)element).Write(stream);
+                    ((Bundle)message).Write(stream);
                 }
                 else
                 {
                     return;
                 }
                 udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
+            }
+        }
+    }
+
+    void Add(object data)
+    {
+        lock (lockObject_)
+        {
+            messages_.Enqueue(data);
+
+            while (messages_.Count > MaxQueueSize)
+            {
+                messages_.Dequeue();
             }
         }
     }
@@ -77,18 +91,12 @@ public class uOscClient : MonoBehaviour
 
     public void Send(Message message)
     {
-        lock (lockObject_)
-        {
-            elements_.Enqueue(message);
-        }
+        Add(message);
     }
 
     public void Send(Bundle bundle)
     {
-        lock (lockObject_)
-        {
-            elements_.Enqueue(bundle);
-        }
+        Add(bundle);
     }
 }
 
