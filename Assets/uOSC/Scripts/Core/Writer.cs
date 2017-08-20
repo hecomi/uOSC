@@ -7,6 +7,9 @@ namespace uOSC
 
 public static class Writer
 {
+    private static readonly byte Zero = Convert.ToByte('\0');
+    public static readonly byte[] Zeros = { Zero, Zero, Zero, Zero };
+
     public static void Write(MemoryStream stream, int value)
     {
         var byteValue = BitConverter.GetBytes(value);
@@ -37,7 +40,7 @@ public static class Writer
         var offset = Util.GetStringAlignedSize(size) - size;
         if (offset > 0)
         {
-            stream.Write(Util.Zeros, 0, offset);
+            stream.Write(Zeros, 0, offset);
         }
     }
 
@@ -51,7 +54,7 @@ public static class Writer
         var offset = Util.GetBufferAlignedSize(size) - size;
         if (offset > 0)
         {
-            stream.Write(Util.Zeros, 0, offset);
+            stream.Write(Zeros, 0, offset);
         }
     }
 

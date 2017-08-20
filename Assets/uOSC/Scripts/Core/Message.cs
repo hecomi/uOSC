@@ -7,7 +7,7 @@ public struct Message
 {
     public string address;
     public Timestamp timestamp;
-    public object[] packet;
+    public object[] values;
 
     public static Message none
     {
@@ -18,7 +18,7 @@ public struct Message
     {
         this.address = address;
         this.timestamp = new Timestamp();
-        this.packet = packet;
+        this.values = packet;
     }
 
     public void Write(MemoryStream stream)
@@ -36,9 +36,9 @@ public struct Message
     void WriteTypes(MemoryStream stream)
     {
         string types = ",";
-        for (int i = 0; i < packet.Length; ++i)
+        for (int i = 0; i < values.Length; ++i)
         {
-            var value = packet[i];
+            var value = values[i];
             if      (value is int)    types += Identifier.Int;
             else if (value is float)  types += Identifier.Float;
             else if (value is string) types += Identifier.String;
@@ -49,9 +49,9 @@ public struct Message
 
     void WriteValues(MemoryStream stream)
     {
-        for (int i = 0; i < packet.Length; ++i)
+        for (int i = 0; i < values.Length; ++i)
         {
-            var value = packet[i];
+            var value = values[i];
             if      (value is int)    Writer.Write(stream, value.AsInt());
             else if (value is float)  Writer.Write(stream, value.AsFloat());
             else if (value is string) Writer.Write(stream, value.AsString());

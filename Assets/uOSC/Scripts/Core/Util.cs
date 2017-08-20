@@ -5,22 +5,8 @@ using System.IO;
 namespace uOSC
 {
 
-public static class Identifier
-{
-    public const string Bundle = "#bundle";
-
-    public const char Int    = 'i';
-    public const char Float  = 'f';
-    public const char String = 's';
-    public const char Blob   = 'b';
-}
-
 public static class Util
 {
-    private static readonly byte Zero = Convert.ToByte('\0');
-    public static readonly byte[] Zeros = { Zero, Zero, Zero, Zero };
-    public static readonly object[] EmptyObjectArray = new object[0];
-
     public static bool IsMultipleOfFour(int num)
     {
         return num == (num & ~0x3);
