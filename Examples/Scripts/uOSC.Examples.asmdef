@@ -1,0 +1,6 @@
+{
+    "name": "uOSC.Examples",
+    "references": [
+        "uOSC"
+    ]
+}
