@@ -18,6 +18,9 @@ Install
 Download the latest `.unitypackage` from [Release page](https://github.com/hecomi/uOSC/releases)
 and import it to your Unity project.
 
+
+Or you can add `https://github.com/hecomi/uOSC?path=/Assets/uOSC/Scripts` to Package Manager
+
 How to use
 ----------
 
