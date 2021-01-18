@@ -19,7 +19,7 @@ Download the latest `.unitypackage` from [Release page](https://github.com/hecom
 and import it to your Unity project.
 
 
-Or you can add `https://github.com/hecomi/uOSC?path=/Assets/uOSC/Scripts` to Package Manager
+Or you can add `https://github.com/hecomi/uOSC.git?path=/Assets/uOSC/Scripts` to Package Manager
 
 How to use
 ----------
