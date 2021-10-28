@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-
-namespace uOSC
-{
+using uOSC;
 
 [RequireComponent(typeof(uOscServer))]
 public class ServerTest : MonoBehaviour
@@ -28,6 +26,4 @@ public class ServerTest : MonoBehaviour
 
         Debug.Log(msg);
     }
-}
-
 }

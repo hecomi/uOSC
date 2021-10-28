@@ -64,3 +64,4 @@ crashlytics-build.properties
 # Others
 .DS_Store
 .vscode
+.vsconfig
