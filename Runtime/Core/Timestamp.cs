@@ -40,13 +40,7 @@ public struct Timestamp
 
     public DateTime ToLocalTime()
     {
-#if NETFX_CORE
         return TimeZoneInfo.ConvertTime(ToUtcTime(), TimeZoneInfo.Local);
-#else
-        var utc = ToUtcTime();
-        var timeZone = System.TimeZone.CurrentTimeZone;
-        return utc + timeZone.GetUtcOffset(DateTime.Now);
-#endif
     }
 }
 

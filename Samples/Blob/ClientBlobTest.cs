@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-
-namespace uOSC
-{
+using uOSC;
 
 [RequireComponent(typeof(uOscClient))]
 public class ClientBlobTest : MonoBehaviour
@@ -25,6 +23,4 @@ public class ClientBlobTest : MonoBehaviour
         var client = GetComponent<uOscClient>();
         client.Send("/uOSC/blob", byteTexture_);
     }
-}
-
 }

@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-
-namespace uOSC
-{
+using uOSC;
 
 [RequireComponent(typeof(uOscClient))]
 public class ClientBundleTest : MonoBehaviour
@@ -29,6 +27,4 @@ public class ClientBundleTest : MonoBehaviour
 
         client.Send(root);
     }
-}
-
 }

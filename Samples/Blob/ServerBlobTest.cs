@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-
-namespace uOSC
-{
+using uOSC;
 
 [RequireComponent(typeof(uOscServer)),
  RequireComponent(typeof(Renderer))]
@@ -32,6 +30,4 @@ public class ServerBlobTest : MonoBehaviour
 #endif
         }
     }
-}
-
 }
