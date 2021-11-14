@@ -1,4 +1,4 @@
-name: Update-UPM-Branch
+name: Create UPM branches and run NPM publish
 
 on:
   push:
@@ -18,9 +18,17 @@ jobs:
         id: tag
         run: echo ::set-output name=name::${GITHUB_REF#refs/tags/v}
 
-      - name: Create UPM Branches
+      - name: Create UPM branches
         uses: hecomi/create-upm-branch-action@main
         with:
-          git-tag: ${{ steps.tag.outputs.name }}
+          git-tag: ${{steps.tag.outputs.name}}
           pkg-root-dir-path: Assets/uOSC
           main-branch: master
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+
+      - name: NPM publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
