@@ -35,8 +35,10 @@ public class Udp : uOSC.Udp
         Stop();
         state_ = State.Server;
 
-        endPoint_ = new IPEndPoint(IPAddress.Any, port);
-        udpClient_ = new UdpClient(endPoint_);
+        endPoint_ = new IPEndPoint(IPAddress.IPv6Any, port);
+        udpClient_ = new UdpClient(System.Net.Sockets.AddressFamily.InterNetworkV6);
+        udpClient_.Client.SetSocketOption(System.Net.Sockets.SocketOptionLevel.IPv6, System.Net.Sockets.SocketOptionName.IPv6Only, 0);
+        udpClient_.Client.Bind(endPoint_);
         thread_.Start(() => 
         {
             while (udpClient_.Available > 0) 
@@ -57,7 +59,7 @@ public class Udp : uOSC.Udp
 
         var ip = IPAddress.Parse(address);
         endPoint_ = new IPEndPoint(ip, port);
-        udpClient_ = new UdpClient();
+        udpClient_ = new UdpClient(endPoint_.AddressFamily);
     }
 
     public override void Stop()
