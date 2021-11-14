@@ -14,21 +14,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Tag name
+      - name: Get tag name
         id: tag
         run: echo ::set-output name=name::${GITHUB_REF#refs/tags/v}
 
-      - name: Create UPM branches
+      - name: Create UPM branch
         uses: hecomi/create-upm-branch-action@main
         with:
           git-tag: ${{steps.tag.outputs.name}}
           pkg-root-dir-path: Assets/uOSC
           main-branch: master
 
-      - name: Setup Node
+      - name: Setup node
         uses: actions/setup-node@v2
+          registry-url: 'https://registry.npmjs.org'
 
       - name: NPM publish
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
