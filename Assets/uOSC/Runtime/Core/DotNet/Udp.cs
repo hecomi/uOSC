@@ -1,6 +1,5 @@
 ﻿#if !NETFX_CORE
 
-using UnityEngine;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -36,8 +35,8 @@ public class Udp : uOSC.Udp
         state_ = State.Server;
 
         endPoint_ = new IPEndPoint(IPAddress.IPv6Any, port);
-        udpClient_ = new UdpClient(System.Net.Sockets.AddressFamily.InterNetworkV6);
-        udpClient_.Client.SetSocketOption(System.Net.Sockets.SocketOptionLevel.IPv6, System.Net.Sockets.SocketOptionName.IPv6Only, 0);
+        udpClient_ = new UdpClient(AddressFamily.InterNetworkV6);
+        udpClient_.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
         udpClient_.Client.Bind(endPoint_);
         thread_.Start(() => 
         {
