@@ -27,6 +27,7 @@ jobs:
 
       - name: Setup node
         uses: actions/setup-node@v2
+        with:
           registry-url: 'https://registry.npmjs.org'
 
       - name: NPM publish
