@@ -1,26 +1,20 @@
 uOSC
 ====
 
-![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)
-
-**uOSC** is an OSC implementation for Unity.
-
-Platforms
----------
-
-- Windows
-- Mac
-- HoloLens
-
-I've not checked Android and iOS yet...
+**uOSC** is a simple OSC implementation for Unity.
 
 Install
 -------
 
-Download the latest `.unitypackage` from [Release page](https://github.com/hecomi/uOSC/releases)
-and import it into your Unity project.
-
-Alternatively, add `https://github.com/hecomi/uOSC.git#upm` to Package Manager.
+- Unity Package
+  - Download the latest .unitypackage from [Release page](https://github.com/hecomi/uOSC/releases).
+- Git URL (UPM)
+  - Add `https://github.com/hecomi/uOSC.git#upm` to Package Manager.
+- Scoped Registry (UPM)
+  - Add a scoped registry to your project.
+    - URL: `https://registry.npmjs.com`
+    - Scope: `com.hecomi`
+  - Install uOSC in Package Manager. 
 
 How to use
 ----------
