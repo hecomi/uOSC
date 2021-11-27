@@ -29,6 +29,11 @@ public class Udp : uOSC.Udp
         get { return messageQueue_.Count; }
     }
 
+    public override bool isRunning
+    {
+        get { return socket_ != null; }
+    }
+
     public async override void StartServer(int port)
     {
         try 
@@ -67,6 +72,7 @@ public class Udp : uOSC.Udp
     public override void Stop()
     {
         socket_.Dispose();
+        socket_ = null;
     }
 
     public async override void Send(byte[] data, int size)
