@@ -1,7 +1,7 @@
 uOSC
 ====
 
-**uOSC** is a simple OSC implementation for Unity.
+**uOSC** is an OSC implementation for Unity.
 
 Install
 -------
@@ -14,7 +14,7 @@ Install
   - Add a scoped registry to your project.
     - URL: `https://registry.npmjs.com`
     - Scope: `com.hecomi`
-  - Install uOSC in Package Manager. 
+  - Install uOSC in Package Manager.
 
 How to use
 ----------
@@ -83,9 +83,14 @@ public class ClientTest : MonoBehaviour
 Tips
 ----
 
-### Start / Stop manually
+### Start / Stop
 
-If you want to start and stop uOSC in runtime, please toggle the `enable` flag of `uOscServer` or `uOscClient`.
+If `autoStart` of `uOscServer` is true, the server will start automatically at runtime. If you want to start it manually, you can set it to false and call `StartServer()`; calling `StopServer()` will stop the server.
+
+### Change address and port
+
+If the `port` or `address` of `uOscClient` / `uOscServer` is changed, the server or client will be restarted automatically.
+
 
 ### Send texture
 
@@ -229,7 +234,6 @@ public class ClientBundleTest : MonoBehaviour
 }
 ```
 
-### Increase buffer size
+### Maximum data size
 
-If you want to increaset the size of buffer, please edit the `uOscClient.BufferSize` directly (default is 8192).
-
+The maximum packet size that can be sent is determined by the UDP spec, which is 65535 bytes minus the size of the UDP and OSC headers.
