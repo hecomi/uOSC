@@ -29,15 +29,31 @@ public class Udp : uOSC.Udp
         get { return messageQueue_.Count; }
     }
 
+    public override bool isRunning
+    {
+        get { return state_ != State.Stop; }
+    }
+
     public override void StartServer(int port)
     {
         Stop();
         state_ = State.Server;
 
-        endPoint_ = new IPEndPoint(IPAddress.IPv6Any, port);
-        udpClient_ = new UdpClient(AddressFamily.InterNetworkV6);
-        udpClient_.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
-        udpClient_.Client.Bind(endPoint_);
+        try
+        {
+            endPoint_ = new IPEndPoint(IPAddress.IPv6Any, port);
+            udpClient_ = new UdpClient(AddressFamily.InterNetworkV6);
+            udpClient_.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
+            udpClient_.Client.Bind(endPoint_);
+        }
+        catch (System.Exception e)
+        {
+
+            UnityEngine.Debug.LogError(e.ToString());
+            state_ = State.Stop;
+            return;
+        }
+
         thread_.Start(() => 
         {
             while (udpClient_.Available > 0) 
@@ -72,7 +88,14 @@ public class Udp : uOSC.Udp
 
     public override void Send(byte[] data, int size)
     {
-        udpClient_.Send(data, size, endPoint_);
+        try
+        {
+            udpClient_.Send(data, size, endPoint_);
+        }
+        catch (System.Exception e)
+        {
+            UnityEngine.Debug.LogError(e.ToString());
+        }
     }
 
     public override byte[] Receive()

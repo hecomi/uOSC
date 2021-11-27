@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/uOSC/Samples/Client to Server/Server.unity
+    guid: 664592c5d4b0c441ea8b1c68adb4de2f
+  m_configObjects: {}
