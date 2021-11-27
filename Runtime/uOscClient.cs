@@ -7,14 +7,14 @@ namespace uOSC
 
 public class uOscClient : MonoBehaviour
 {
-    private const int BufferSize = 8192;
-    private const int MaxQueueSize = 100;
+    [SerializeField]
+    public string address = "127.0.0.1";
 
     [SerializeField]
-    string address = "127.0.0.1";
+    public int port = 3333;
 
     [SerializeField]
-    int port = 3333;
+    public int maxQueueSize = 100;
 
 #if NETFX_CORE
     Udp udp_ = new Uwp.Udp();
@@ -26,16 +26,44 @@ public class uOscClient : MonoBehaviour
     Queue<object> messages_ = new Queue<object>();
     object lockObject_ = new object();
 
+    string address_ = "";
+    int port_ = 0;
+
     void OnEnable()
     {
-        udp_.StartClient(address, port);
-        thread_.Start(UpdateSend);
+        StartClient();
     }
 
     void OnDisable()
     {
+        StopClient();
+    }
+
+    public void StartClient()
+    {
+        udp_.StartClient(address, port);
+        thread_.Start(UpdateSend);
+        address_ = address;
+        port_ = port;
+    }
+
+    public void StopClient()
+    {
         thread_.Stop();
         udp_.Stop();
+    }
+
+    void Update()
+    {
+        UpdateChangePortAndAddress();
+    }
+
+    void UpdateChangePortAndAddress()
+    {
+        if (port_ == port && address_ == address) return;
+
+        StopClient();
+        StartClient();
     }
 
     void UpdateSend()
@@ -48,7 +76,7 @@ public class uOscClient : MonoBehaviour
                 message = messages_.Dequeue();
             }
 
-            using (var stream = new MemoryStream(BufferSize))
+            using (var stream = new MemoryStream())
             {
                 if (message is Message)
                 {
@@ -60,7 +88,7 @@ public class uOscClient : MonoBehaviour
                 }
                 else
                 {
-                    return;
+                    continue;
                 }
                 udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
             }
@@ -73,7 +101,7 @@ public class uOscClient : MonoBehaviour
         {
             messages_.Enqueue(data);
 
-            while (messages_.Count > MaxQueueSize)
+            while (messages_.Count > maxQueueSize)
             {
                 messages_.Dequeue();
             }
