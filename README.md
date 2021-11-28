@@ -21,8 +21,9 @@ How to use
 
 ### Server
 
-1. Attach `uOscServer` component to GameObject.
-2. Register `uOscServer.onDataReceived` event.
+1. Attach `uOscServer` component to a GameObject.
+2. Set the port you want to listen on.
+3. Register the `uOscServer.onDataReceived` event (from code or inspector).
 
 ```cs
 using UnityEngine;
@@ -55,11 +56,9 @@ public class ServerTest : MonoBehaviour
 }
 ```
 
-`onDataReceived` is called from the Unity main thread, so you can use Unity APIs inside it.
+`onDataReceived` is called from the main Unity thread, so you can use the Unity APIs in it.
 
-OSC Bundle is automatically expanded, and each message comes to
-the `onDataReceived` event handler directly, so you don't have to check
-whether the value is a OSC Message or OSC Bundle.
+Since the OSC Bundle is automatically expanded and each message comes directly to the `onDataReceived` event handler, there is no need to check whether the value is an OSC Message or an OSC Bundle.
 
 ### Client
 
@@ -80,28 +79,38 @@ public class ClientTest : MonoBehaviour
 }
 ```
 
+
+UI
+--
+
+<img src="https://raw.githubusercontent.com/wiki/hecomi/uOSC/uOSC-UI.gif" width="720" />
+
 Tips
 ----
 
 ### Start / Stop
 
-If `autoStart` of `uOscServer` is true, the server will start automatically at runtime. If you want to start it manually, you can set it to false and call `StartServer()`; calling `StopServer()` will stop the server.
+If `autoStart` of `uOscServer` is true, the server will start automatically at runtime. If you want to start it manually, you can set it to false and call `StartServer()`; calling `StopServer()` will stop the server. If you want to start and stop from the inspector, toggle the checkbox of the component.
 
 ### Change address and port dynamically
 
-If the `port` or `address` of `uOscClient` / `uOscServer` is changed, the server or client will be restarted automatically.
+If the `port` or `address` of `uOscClient` / `uOscServer` is changed, the server or client will be restarted automatically. If you want to detect when a server or client starts or stops, register listeners to `uOscServer.onServerStarted` / `uOscServer.onServerStopped` / `uOscClient.onClientStarted` / `uOscClient.onClientStopped` events.
 
 ### Queue Size
 
 `uOscClient.Send()` is not executed immediately, but is registered in a queue, and is retrieved from the queue and sent in a background thread. If a large number of `Send()` are called at the same time, messages that exceed `uOscClient.maxQueueSize` will be automatically discarded. In this case, you should change `uOscClient.maxQueueSize` to a larger value. The interval of the background thread processing is about 1 ms by default.
 
-### Data Transmission Interval
+### Data transmission interval
 
 If you need to send multiple large `byte[]` data at the same time, there are cases where you will lose packets frequently if you do not allow an interval. In this case, set `uOscClient.dataTransmissionInterval` (seconds). The background thread waits for the interval between each time a message is sent.
 
 ### Maximum data size
 
 The maximum packet size that can be sent is determined by the UDP spec, which is 65535 bytes minus the size of the UDP and OSC headers.
+
+### No message from other devices
+
+Please check your firewall settings.
 
 
 Examples
