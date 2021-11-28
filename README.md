@@ -83,7 +83,7 @@ public class ClientTest : MonoBehaviour
 UI
 --
 
-<img src="https://raw.githubusercontent.com/wiki/hecomi/uOSC/uOSC-UI.gif" width="720" />
+<img src="https://raw.githubusercontent.com/wiki/hecomi/uOSC/uOSC-UI.png" width="720" />
 
 Tips
 ----
