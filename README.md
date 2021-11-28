@@ -87,10 +87,25 @@ Tips
 
 If `autoStart` of `uOscServer` is true, the server will start automatically at runtime. If you want to start it manually, you can set it to false and call `StartServer()`; calling `StopServer()` will stop the server.
 
-### Change address and port
+### Change address and port dynamically
 
 If the `port` or `address` of `uOscClient` / `uOscServer` is changed, the server or client will be restarted automatically.
 
+### Queue Size
+
+`uOscClient.Send()` is not executed immediately, but is registered in a queue, and is retrieved from the queue and sent in a background thread. If a large number of `Send()` are called at the same time, messages that exceed `uOscClient.maxQueueSize` will be automatically discarded. In this case, you should change `uOscClient.maxQueueSize` to a larger value. The interval of the background thread processing is about 1 ms by default.
+
+### Data Transmission Interval
+
+If you need to send multiple large `byte[]` data at the same time, there are cases where you will lose packets frequently if you do not allow an interval. In this case, set `uOscClient.dataTransmissionInterval` (seconds). The background thread waits for the interval between each time a message is sent.
+
+### Maximum data size
+
+The maximum packet size that can be sent is determined by the UDP spec, which is 65535 bytes minus the size of the UDP and OSC headers.
+
+
+Examples
+--------
 
 ### Send texture
 
@@ -233,7 +248,3 @@ public class ClientBundleTest : MonoBehaviour
     }
 }
 ```
-
-### Maximum data size
-
-The maximum packet size that can be sent is determined by the UDP spec, which is 65535 bytes minus the size of the UDP and OSC headers.
