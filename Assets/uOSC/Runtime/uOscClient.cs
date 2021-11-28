@@ -17,7 +17,7 @@ public class uOscClient : MonoBehaviour
     [SerializeField]
     public int maxQueueSize = 100;
 
-    [SerializeField]
+    [SerializeField, Tooltip("milliseconds")]
     public float dataTransimissionInterval = 0f;
 
 #if NETFX_CORE
@@ -111,7 +111,7 @@ public class uOscClient : MonoBehaviour
 
             if (dataTransimissionInterval > 0f)
             {
-                var ticks = Mathf.Round(dataTransimissionInterval * Stopwatch.Frequency);
+                var ticks = (long)Mathf.Round(dataTransimissionInterval * 1000f * Stopwatch.Frequency);
                 while (sw.ElapsedTicks < ticks);
             }
         }

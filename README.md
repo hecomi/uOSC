@@ -102,7 +102,7 @@ If the `port` or `address` of `uOscClient` / `uOscServer` is changed, the server
 
 ### Data transmission interval
 
-If you need to send multiple large `byte[]` data at the same time, there are cases where you will lose packets frequently if you do not allow an interval. In this case, set `uOscClient.dataTransmissionInterval` (seconds). The background thread waits for the interval between each time a message is sent.
+If you need to send multiple large `byte[]` data at the same time, there are cases where you will lose packets frequently if you do not allow an interval. In this case, set `uOscClient.dataTransmissionInterval` (milliseconds). The background thread waits for the interval between each time a message is sent.
 
 ### Maximum data size
 
