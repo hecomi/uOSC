@@ -111,7 +111,7 @@ public class uOscClient : MonoBehaviour
 
             if (dataTransimissionInterval > 0f)
             {
-                var ticks = (long)Mathf.Round(dataTransimissionInterval * 1000f * Stopwatch.Frequency);
+                var ticks = (long)Mathf.Round(dataTransimissionInterval / 1000f * Stopwatch.Frequency);
                 while (sw.ElapsedTicks < ticks);
             }
         }
