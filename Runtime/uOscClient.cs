@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace uOSC
 {
@@ -15,6 +16,9 @@ public class uOscClient : MonoBehaviour
 
     [SerializeField]
     public int maxQueueSize = 100;
+
+    [SerializeField]
+    float dataTransimissionInterval = 0f;
 
 #if NETFX_CORE
     Udp udp_ = new Uwp.Udp();
@@ -70,6 +74,8 @@ public class uOscClient : MonoBehaviour
     {
         while (messages_.Count > 0)
         {
+            var sw = Stopwatch.StartNew();
+
             object message;
             lock (lockObject_)
             {
@@ -91,6 +97,12 @@ public class uOscClient : MonoBehaviour
                     continue;
                 }
                 udp_.Send(Util.GetBuffer(stream), (int)stream.Position);
+            }
+
+            if (dataTransimissionInterval > 0f)
+            {
+                var ticks = Mathf.Round(dataTransimissionInterval * Stopwatch.Frequency);
+                while (sw.ElapsedTicks < ticks);
             }
         }
     }
