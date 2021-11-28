@@ -106,12 +106,15 @@ If you need to send multiple large `byte[]` data at the same time, there are cas
 
 ### Maximum data size
 
-The maximum packet size that can be sent is determined by the UDP spec, which is 65535 bytes minus the size of the UDP and OSC headers.
+The maximum packet size that can be sent is determined by the UDP spec, which is 65535 bytes minus the size of the UDP and OSC headers. If you want to divide packets to send larger data, please refer to [uPacketDivision](https://github.com/hecomi/uPacketDivision).
 
 ### No message from other devices
 
 Please check your firewall settings.
 
+### Backward compatibility
+
+Various features have been added since v2, but backward compatibility with v1 has been maintained.
 
 Examples
 --------
