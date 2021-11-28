@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 
 namespace uOSC
 {
@@ -21,8 +20,9 @@ public class uOscServer : MonoBehaviour
 #endif
     Parser parser_ = new Parser();
 
-    public class DataReceiveEvent : UnityEvent<Message> {};
-    public DataReceiveEvent onDataReceived { get; private set; } = new DataReceiveEvent();
+    public DataReceiveEvent onDataReceived = new DataReceiveEvent();
+    public ServerStartEvent onServerStarted = new ServerStartEvent();
+    public ServerStopEvent onServerStopped = new ServerStopEvent();
 
     int port_ = 0;
     bool isStarted_ = false;
@@ -50,15 +50,6 @@ public class uOscServer : MonoBehaviour
         StopServer();
     }
 
-    public void SetPort(int port)
-    {
-        if (this.port == port) return;
-
-        this.port = port;
-        StopServer();
-        StartServer();
-    }
-
     public void StartServer()
     {
         if (isStarted_) return;
@@ -67,6 +58,8 @@ public class uOscServer : MonoBehaviour
         thread_.Start(UpdateMessage);
 
         isStarted_ = true;
+
+        onServerStarted.Invoke(port);
     }
 
     public void StopServer()
@@ -77,6 +70,8 @@ public class uOscServer : MonoBehaviour
         udp_.Stop();
 
         isStarted_ = false;
+
+        onServerStopped.Invoke(port);
     }
 
     void Update()

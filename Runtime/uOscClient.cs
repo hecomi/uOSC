@@ -30,6 +30,9 @@ public class uOscClient : MonoBehaviour
     Queue<object> messages_ = new Queue<object>();
     object lockObject_ = new object();
 
+    public ClientStartEvent onClientStarted = new ClientStartEvent();
+    public ClientStopEvent onClientStopped = new ClientStopEvent();
+
     string address_ = "";
     int port_ = 0;
 
@@ -49,12 +52,14 @@ public class uOscClient : MonoBehaviour
         thread_.Start(UpdateSend);
         address_ = address;
         port_ = port;
+        onClientStarted.Invoke(address, port);
     }
 
     public void StopClient()
     {
         thread_.Stop();
         udp_.Stop();
+        onClientStopped.Invoke(address, port);
     }
 
     void Update()
