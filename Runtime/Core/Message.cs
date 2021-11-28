@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 
 namespace uOSC
 {
@@ -57,6 +58,24 @@ public struct Message
             else if (value is string) Writer.Write(stream, (string)value);
             else if (value is byte[]) Writer.Write(stream, (byte[])value);
         }
+    }
+
+    public override string ToString()
+    {
+        var str = new StringBuilder();
+
+        str.Append(address);
+        str.Append("\t");
+
+        foreach (var value in values)
+        {
+            str.Append(value.GetString());
+            str.Append(" ");
+        }
+
+        str.Append($"({timestamp.ToLocalTime()})");
+
+        return str.ToString();
     }
 }
 

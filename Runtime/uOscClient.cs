@@ -18,7 +18,7 @@ public class uOscClient : MonoBehaviour
     public int maxQueueSize = 100;
 
     [SerializeField]
-    float dataTransimissionInterval = 0f;
+    public float dataTransimissionInterval = 0f;
 
 #if NETFX_CORE
     Udp udp_ = new Uwp.Udp();
@@ -35,6 +35,11 @@ public class uOscClient : MonoBehaviour
 
     string address_ = "";
     int port_ = 0;
+
+    public bool isRunning
+    {
+        get { return udp_.isRunning; }
+    }
 
     void OnEnable()
     {

@@ -24,10 +24,14 @@ public class uOscServer : MonoBehaviour
     public ServerStartEvent onServerStarted = new ServerStartEvent();
     public ServerStopEvent onServerStopped = new ServerStopEvent();
 
+#if UNITY_EDITOR
+    public DataReceiveEvent _onDataReceivedEditor = new DataReceiveEvent();
+#endif
+
     int port_ = 0;
     bool isStarted_ = false;
 
-    bool isRunning
+    public bool isRunning
     {
         get { return udp_.isRunning; }
     }
@@ -86,6 +90,9 @@ public class uOscServer : MonoBehaviour
         {
             var message = parser_.Dequeue();
             onDataReceived.Invoke(message);
+#if UNITY_EDITOR
+            _onDataReceivedEditor.Invoke(message);
+#endif
         }
     }
 
