@@ -48,6 +48,7 @@ public class ServerTest : MonoBehaviour
             if      (value is int)    msg += (int)value;
             else if (value is float)  msg += (float)value;
             else if (value is string) msg += (string)value;
+            else if (value is bool)   msg += (bool)value;
             else if (value is byte[]) msg += "byte[" + ((byte[])value).Length + "]";
         }
 
@@ -63,7 +64,7 @@ Since the OSC Bundle is automatically expanded and each message comes directly t
 ### Client
 
 1. Add `uOscClient` component to GameObject.
-2. Send data (`int`, `float`, `string`, and `byte[]`, are supported now).
+2. Send data (`int`, `float`, `string`, `bool`, and `byte[]`, are supported now).
 
 ```cs
 using UnityEngine;

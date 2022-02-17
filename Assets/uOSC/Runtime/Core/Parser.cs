@@ -12,6 +12,8 @@ public static class Identifier
     public const char Float  = 'f';
     public const char String = 's';
     public const char Blob   = 'b';
+    public const char True   = 'T';
+    public const char False  = 'F';
 }
 
 public class Parser
@@ -103,10 +105,12 @@ public class Parser
         {
             switch (types[i])
             {
-                case Identifier.Int    : data[i] = Reader.ParseInt(buf, ref pos);    break;
-                case Identifier.Float  : data[i] = Reader.ParseFloat(buf, ref pos);  break;
+                case Identifier.Int    : data[i] = Reader.ParseInt(buf, ref pos); break;
+                case Identifier.Float  : data[i] = Reader.ParseFloat(buf, ref pos); break;
                 case Identifier.String : data[i] = Reader.ParseString(buf, ref pos); break;
-                case Identifier.Blob   : data[i] = Reader.ParseBlob(buf, ref pos);   break;
+                case Identifier.Blob   : data[i] = Reader.ParseBlob(buf, ref pos); break;
+                case Identifier.True   : data[i] = true; break;
+                case Identifier.False  : data[i] = false; break;
                 default:
                     // Add more types here if you want to handle them.
                     break;

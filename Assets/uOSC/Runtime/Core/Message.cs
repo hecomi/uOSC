@@ -44,6 +44,7 @@ public struct Message
             else if (value is float)  types += Identifier.Float;
             else if (value is string) types += Identifier.String;
             else if (value is byte[]) types += Identifier.Blob;
+            else if (value is bool)   types += (bool)value ? Identifier.True : Identifier.False;
         }
         Writer.Write(stream, types);
     }
