@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace uOSC
 {
@@ -12,7 +13,7 @@ public class uOscServerEditor : Editor
     uOscServer server { get { return target as uOscServer; } }
     Queue<Message> messages = new Queue<Message>();
     Vector2 messageScrollPos = Vector2.zero;
-    System.Text.StringBuilder builder = new System.Text.StringBuilder();
+    StringBuilder messageStringBuilder = new StringBuilder();
 
     void OnEnable()
     {
@@ -102,20 +103,26 @@ public class uOscServerEditor : Editor
 
         if (EditorUtil.SimpleFoldout("Messages", false))
         {
-            builder.Clear();
             EditorGUILayout.BeginVertical(GUILayout.MinHeight(200f));
+
+            messageStringBuilder.Clear();
             messageScrollPos = EditorGUILayout.BeginScrollView(messageScrollPos, GUI.skin.box);
             foreach (var msg in messages.Reverse())
             {
-                builder.AppendLine(msg.ToString());
+                messageStringBuilder.AppendLine(msg.ToString());
             }
-            var text = builder.ToString();
-            GUILayout.Label(text);
+            var messageText = messageStringBuilder.ToString();
+            GUILayout.Label(messageText);
             EditorGUILayout.EndScrollView();
-            if (GUILayout.Button("Copy"))
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Copy", GUILayout.MinWidth(100f)))
             {
-                EditorGUIUtility.systemCopyBuffer = text;
+                EditorGUIUtility.systemCopyBuffer = messageText;
             }
+            EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.EndVertical();
 
             Repaint();
